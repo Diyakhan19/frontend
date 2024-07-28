@@ -1,6 +1,46 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useLoginMutation } from "@/redux/services/authService";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+  const [login, { isLoading }] = useLoginMutation();
+  const router = useRouter();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Email is invalid")
+        .required("Email is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: async (values) => {
+      const body = {
+        email: values.email,
+        password: values.password,
+      };
+
+      try {
+        const res = await login(body).unwrap();
+        toast.success(res.message);
+        router.push("/");
+      } catch (err) {
+        toast.error(err?.data?.message);
+      }
+    },
+  });
+
+  const { values, errors, touched, handleChange, handleSubmit } = formik;
+
+  const { email, password } = values;
+
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -15,7 +55,7 @@ const Login = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="email"
@@ -29,9 +69,13 @@ const Login = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                onChange={handleChange}
+                value={email}
               />
+              {touched.email && errors.email && (
+                <p className="text-red-500">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -58,18 +102,23 @@ const Login = () => {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                onChange={handleChange}
+                value={password}
               />
+              {touched.password && errors.password && (
+                <p className="text-red-500">{errors.password}</p>
+              )}
             </div>
           </div>
 
           <div>
             <button
+              disabled={isLoading}
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign in
+              {isLoading ? "Loading..." : "Sign In"}
             </button>
           </div>
         </form>

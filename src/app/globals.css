@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type="text"] {
+  border-radius: 6px;
+  border: 1px solid rgb(197, 194, 194);
+  padding: 8px 12px;
+  height: 40px;
+  color: #6b7280;
+}
+
+textarea {
+  border-radius: 6px;
+  border: 1px solid rgb(197, 194, 194);
+  padding: 8px 12px;
+  color: #6b7280;
+}
+
+button {
+  height: 40px;
+  border-radius: 6px;
+}

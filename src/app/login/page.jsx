@@ -5,10 +5,14 @@ import * as Yup from "yup";
 import { useLoginMutation } from "@/redux/services/authService";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/reducers/authSlice";
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -30,6 +34,8 @@ const Login = () => {
       try {
         const res = await login(body).unwrap();
         toast.success(res.message);
+        setCookie("token", res.data.token);
+        dispatch(setUser(res.data.user));
         router.push("/");
       } catch (err) {
         toast.error(err?.data?.message);
@@ -87,7 +93,6 @@ const Login = () => {
               >
                 Password
               </label>
-             
             </div>
             <div className="mt-2">
               <input
@@ -115,8 +120,6 @@ const Login = () => {
             </button>
           </div>
         </form>
-
- 
       </div>
     </div>
   );

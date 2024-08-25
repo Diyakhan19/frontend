@@ -96,18 +96,9 @@ const Carousel = (props) => {
                   />
                 </div>
 
-                <div className="text-white absolute top-[25%] lg:top-[20%] left-4 md:left-10 md:leading-[35px]">
-                  <h3 className="font-[600] text-[25px]">{item.title}</h3>
-                  <h3 className="font-[600]">{item.district}</h3>
-                </div>
-                <div>
-                  <button
-                    className="px-2 md:px-4 pb-1 pt-[5px] rounded-md absolute 
-                  bottom-5 md:bottom-15 left-4 md:left-10 text-white hover:scale-105 
-                   font-[600]"
-                  >
-                    See Details
-                  </button>
+                <div className="text-white h-[150px] bg-gradient-to-t from-black via-black/70 to-transparent w-full absolute bottom-0 md:leading-[35px] flex items-center justify-center flex-col">
+                  <h3 className="font-bold text-[25px]">{item.title}</h3>
+                  <h3 className="font-bold">{item.district}</h3>
                 </div>
               </div>
             );

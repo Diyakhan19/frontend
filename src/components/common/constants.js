@@ -1,3 +1,14 @@
+import hadicrafts from "@/assets/images/handicrafts.jpg";
+import clothing from "@/assets/images/clothes.png";
+import dryFruits from "@/assets/images/dryfruits.jpg";
+import herbal from "@/assets/images/herbal.png";
+import furniture from "@/assets/images/furniture.png";
+import electronics from "@/assets/images/electronics.png";
+import books from "@/assets/images/books.png";
+import jewelry from "@/assets/images/jewellery.png";
+import sports from "@/assets/images/sports.png";
+import beauty from "@/assets/images/beauty.png";
+
 export const cities = [
   { label: "Muzaffarabad", value: "Muzaffarabad" },
   { label: "Mirpur", value: "Mirpur" },
@@ -12,14 +23,43 @@ export const cities = [
 ];
 
 export const categories = [
-  { label: "Handicrafts", value: "Handicrafts" },
-  { label: "Textiles & Clothing", value: "Textiles & Clothing" },
-  { label: "Dry Fruits & Spices", value: "Dry Fruits & Spices" },
-  { label: "Herbal Products", value: "Herbal Products" },
-  { label: "Furniture & Home Decor", value: "Furniture & Home Decor" },
-  { label: "Electronics", value: "Electronics" },
-  { label: "Books & Stationery", value: "Books & Stationery" },
-  { label: "Jewelry & Accessories", value: "Jewelry & Accessories" },
-  { label: "Sports & Outdoor Equipment", value: "Sports & Outdoor Equipment" },
-  { label: "Beauty & Personal Care", value: "Beauty & Personal Care" },
+  { label: "Handicrafts", value: "Handicrafts", image: hadicrafts.src },
+  {
+    label: "Clothing & Shoes",
+    value: "Clothing & Shoes",
+    image: clothing.src,
+  },
+  {
+    label: "Dry Fruits & Spices",
+    value: "Dry Fruits & Spices",
+    image: dryFruits.src,
+  },
+  { label: "Herbal Products", value: "Herbal Products", image: herbal.src },
+  {
+    label: "Furniture & Home Decor",
+    value: "Furniture & Home Decor",
+    image: furniture.src,
+  },
+
+  { label: "Electronics", value: "Electronics", image: electronics.src },
+  {
+    label: "Books & Stationery",
+    value: "Books & Stationery",
+    image: books.src,
+  },
+  {
+    label: "Jewelry & Accessories",
+    value: "Jewelry & Accessories",
+    image: jewelry.src,
+  },
+  {
+    label: "Sports & Outdoor Equipment",
+    value: "Sports & Outdoor Equipment",
+    image: sports.src,
+  },
+  {
+    label: "Beauty & Personal Care",
+    value: "Beauty & Personal Care",
+    image: beauty.src,
+  },
 ];

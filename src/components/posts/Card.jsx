@@ -30,14 +30,12 @@ const Card = (props) => {
 
   const isFavorite = favorites.find((item) => item.postId === postId);
 
-  const isMe = +paramsUserId === userId;
-
   const [addRemoveFavPost] = useAddRemoveFavPostMutation();
 
   const onClickFavIcon = async () => {
     try {
       const res = await addRemoveFavPost({ postId }).unwrap();
-      dispatch(updateFavorites(res.data));
+      dispatch(updateFavorites({ key: "post", data: res.data }));
     } catch (err) {
       toast.error("Something went wrong");
     }

@@ -83,8 +83,6 @@ const page = () => {
     setCity("");
   };
 
-
-
   return (
     <div className="bg-white">
       <div>
@@ -225,6 +223,7 @@ const page = () => {
                         <div className="space-y-3 pt-3">
                           <Select
                             values={categories}
+                            label={category}
                             onChange={(val) => setCategory(val)}
                           />
                         </div>
@@ -239,7 +238,7 @@ const page = () => {
                         <div className="space-y-3 pt-3">
                           <Select
                             values={cities}
-                            title={city}
+                            label={city}
                             onChange={(val) => setCity(val)}
                           />
                         </div>

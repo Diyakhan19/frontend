@@ -9,10 +9,7 @@ function classNames(...classes) {
 const Select = (props) => {
   const { values, onChange, label } = props;
 
-  const [selected, setSelected] = useState(label ? label : "");
-
-  const onSelect = (label, value) => {
-    setSelected(label);
+  const onSelect = (value) => {
     onChange(value);
   };
 
@@ -22,7 +19,7 @@ const Select = (props) => {
         <Menu.Button
           className={`bg-white inline-flex h-[40px] w-full justify-between gap-x-1.5 rounded-md px-3 py-2 text-sm font-medium border-[1px] border-borderCol text-gray-500 shadow-sm`}
         >
-          <p>{selected || "Select"}</p>
+          <p>{label !== "" ? label : "Select"}</p>
           <ChevronDownIcon
             className="-mr-1 h-5 w-5 text-gray-400"
             aria-hidden="true"
@@ -50,7 +47,7 @@ const Select = (props) => {
                         "block px-4 py-2 text-sm cursor-pointer"
                       )}
                       onClick={() => {
-                        onSelect(item.label, item.value);
+                        onSelect(item.value);
                       }}
                       key={item.value}
                     >

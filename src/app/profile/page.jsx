@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import Posts from "@/components/posts/Posts";
 import { useState } from "react";
+import Card from "@/components/destinations/Card";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -12,7 +13,9 @@ const page = () => {
   const params = useSearchParams();
   const userId = params.get("userId");
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user: currentUser } = useSelector(
+    (state) => state.auth
+  );
 
   const { data } = useGetUserByIdQuery(userId);
 
@@ -21,6 +24,16 @@ const page = () => {
   const user = data?.data;
 
   if (!user) return;
+
+  const isMe = user.userId === currentUser?.userId;
+
+  const favPosts = user.favorites
+    .filter((item) => item.postId)
+    .map((item) => item.post);
+
+  const favDestinations = user.favorites
+    .filter((item) => item.destinationId)
+    .map((item) => item.destination);
 
   return (
     <>
@@ -230,25 +243,27 @@ const page = () => {
                   <span className="hidden md:inline">hotels</span>
                 </div>
               </li>
-              <li
-                className={`cursor-pointer md:border-t ${
-                  tab === "favorites" && "md:border-gray-700"
-                }`}
-                onClick={() => setTab("favorites")}
-              >
-                <div className="p-3 flex items-center justify-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="size-6"
-                  >
-                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                  </svg>
+              {isAuthenticated && isMe && (
+                <li
+                  className={`cursor-pointer md:border-t ${
+                    tab === "favorites" && "md:border-gray-700"
+                  }`}
+                  onClick={() => setTab("favorites")}
+                >
+                  <div className="p-3 flex items-center justify-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="size-6"
+                    >
+                      <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                    </svg>
 
-                  <span className="hidden md:inline">favorites</span>
-                </div>
-              </li>
+                    <span className="hidden md:inline">favorites</span>
+                  </div>
+                </li>
+              )}
             </ul>
 
             <hr className="mb-3" />
@@ -272,10 +287,19 @@ const page = () => {
                 <div>
                   {user?.favorites?.length !== 0 && (
                     <div>
+                      <h1 className="my-2 font-bold ">
+                        Favorite Destinations: {favDestinations.length}
+                      </h1>
+                      <div className="grid grid-cols-12 gap-2">
+                        {favDestinations.map((item) => (
+                          <Card data={item} />
+                        ))}
+                      </div>
+
+                      <hr className="my-4" />
+
                       <h1 className="my-2 font-bold ">Favorite Posts</h1>
-                      <Posts
-                        posts={user?.favorites?.map((item) => item.post)}
-                      />
+                      <Posts posts={favPosts} />
                     </div>
                   )}
                 </div>

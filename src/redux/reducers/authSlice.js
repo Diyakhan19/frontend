@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { getCookie, deleteCookie } from "cookies-next";
 
 let user = {};
@@ -30,18 +30,35 @@ const authSlice = createSlice({
       state.user = {};
     },
     updateFavorites: (state, action) => {
-      const favorites = [...state.user.favorites];
+      const key = action.payload.key;
+      const data = action.payload.data;
 
-      if (action.payload.action === "added") {
-        favorites.push({ postId: action.payload.postId });
+      const user = current(state.user);
+
+      const favorites = [...user.favorites];
+
+      if (data.action === "added") {
+        const obj =
+          key === "post"
+            ? { postId: data.postId }
+            : { destinationId: data.destinationId };
+
+        favorites.push(obj);
       } else {
-        const indx = favorites.findIndex(
-          (item) => item.postId === action.payload.postId
-        );
-        favorites.splice(indx, 1);
+        let indx = -1;
+        indx =
+          key === "post"
+            ? favorites.findIndex((item) => item.postId === data.postId)
+            : favorites.findIndex(
+                (item) => item.destinationId === data.destinationId
+              );
+
+        if (indx > -1) {
+          favorites.splice(indx, 1);
+        }
       }
 
-      const newUser = { ...state.user, favorites: favorites };
+      const newUser = { ...user, favorites: favorites };
       state.user = newUser;
       localStorage.setItem("user", JSON.stringify(newUser));
     },

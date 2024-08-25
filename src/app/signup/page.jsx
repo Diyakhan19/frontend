@@ -19,6 +19,7 @@ const Signup = () => {
       role: "user",
       confirmPassword: "",
       image: null,
+      about: ""
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Full name is required"),
@@ -41,6 +42,8 @@ const Signup = () => {
       formData.append("email", values.email);
       formData.append("password", values.password);
       formData.append("role", values.role);
+      formData.append("about", values.about);
+
       if (values.image) {
         formData.append("image", values.image);
       }
@@ -79,7 +82,7 @@ const Signup = () => {
         </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border shadow rounded-lg p-5">
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-xl border shadow rounded-lg p-5">
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
@@ -104,8 +107,8 @@ const Signup = () => {
                     field === "password" || field === "confirmPassword"
                       ? "password"
                       : field === "email"
-                      ? "email"
-                      : "text"
+                        ? "email"
+                        : "text"
                   }
                   autoComplete={field}
                   required
@@ -120,6 +123,24 @@ const Signup = () => {
               </div>
             </div>
           ))}
+
+          <div>
+            <label
+              htmlFor="about"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              About
+            </label>
+
+            <textarea
+              rows={4}
+              name="about"
+              onChange={handleChange}
+              value={values.about}
+              className="block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+            />
+          </div>
+
           <div role="group" aria-labelledby="role-group-label">
             <div
               id="role-group-label"

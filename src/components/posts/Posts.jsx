@@ -4,6 +4,7 @@ const Posts = (data) => {
   if (!data) return;
 
   const posts = data.posts;
+  
   return (
     <div className="grid grid-cols-12 gap-2">
       {posts.map((post) => (
@@ -12,7 +13,7 @@ const Posts = (data) => {
         </div>
       ))}
 
-      {posts.length == 0 && (
+      {posts.length === 0 && (
         <div className="col-span-12">
           <div className="flex items-center justify-center h-[300px]">
             No posts found

@@ -57,7 +57,7 @@ const filters = [
 const page = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const [getAllPosts] = useGetPostsMutation();
+  const [getAllPosts, { isLoading }] = useGetPostsMutation();
 
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState("");
@@ -82,6 +82,8 @@ const page = () => {
     setCategory("");
     setCity("");
   };
+
+
 
   return (
     <div className="bg-white">
@@ -237,6 +239,7 @@ const page = () => {
                         <div className="space-y-3 pt-3">
                           <Select
                             values={cities}
+                            title={city}
                             onChange={(val) => setCity(val)}
                           />
                         </div>

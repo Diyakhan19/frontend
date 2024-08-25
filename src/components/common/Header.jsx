@@ -55,7 +55,7 @@ const Header = () => {
             <a
               key={item.name}
               href={item.href}
-              className="text-sm font-semibold min-w-[100px] flex items-center justify-center leading-6 text-gray-900 shadow rounded-full border px-3 py-2 hover:bg-primary hover:text-white"
+              className="text-sm font-semibold min-w-[100px] flex items-center justify-center leading-6 text-gray-900 shadow rounded-full border px-3 py-1 hover:bg-primary hover:text-white"
             >
               {item.name}
             </a>

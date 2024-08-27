@@ -8,7 +8,7 @@ const navigation = [
   { name: "Hotels", href: "#" },
   { name: "Transport", href: "#" },
   { name: "Marketplace", href: "/posts" },
-  { name: "Company", href: "#" },
+  { name: "Destinations", href: "/destinations" },
 ];
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;

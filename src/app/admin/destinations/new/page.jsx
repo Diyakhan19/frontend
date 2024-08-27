@@ -16,11 +16,12 @@ const page = () => {
     title: "",
     location: "",
     district: "",
+    mapUrl: "",
     description: "",
     images: [],
   });
 
-  const { title, location, district, description, images } = formData;
+  const { title, location, district, description, images, mapUrl } = formData;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,10 +36,13 @@ const page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (images.length < 5) return toast.error("Please select 5 images");
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("location", location);
     formData.append("district", district);
+    formData.append("mapUrl", mapUrl);
     formData.append("description", description);
     for (var i = 0; i < images.length; i++) {
       formData.append("images", images[i]);
@@ -91,6 +95,17 @@ const page = () => {
                 type="text"
                 name="district"
                 value={district}
+                onChange={handleInputChange}
+                className="w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Map URL</label>
+              <input
+                type="text"
+                name="mapUrl"
+                value={mapUrl}
                 onChange={handleInputChange}
                 className="w-full"
                 required

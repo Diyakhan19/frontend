@@ -21,7 +21,40 @@ export const destService = createApi({
         body: body,
       }),
     }),
+    likeUnlikeDestination: builder.mutation({
+      query: (body) => ({
+        url: `/destination/like`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+    getDestById: builder.query({
+      query: (destId) => ({
+        url: `/destination/single?destinationId=${destId}`,
+        method: "GET",
+      }),
+    }),
+    visitedDestination: builder.mutation({
+      query: (body) => ({
+        url: `/destination/visited`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+    saveReview: builder.mutation({
+      query: (body) => ({
+        url: `/destination/review`,
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 });
 
-export const { useAddRemoveFavDestMutation } = destService;
+export const {
+  useAddRemoveFavDestMutation,
+  useGetDestByIdQuery,
+  useLikeUnlikeDestinationMutation,
+  useVisitedDestinationMutation,
+  useSaveReviewMutation,
+} = destService;

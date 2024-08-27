@@ -26,7 +26,7 @@ const page = () => {
         </h1>
 
         <p className="absolute inset-x-0 bottom-4 text-center text-white text-lg">
-          Explore our exclusive tours and destinations
+          Explore our exclusive chosen destinations
         </p>
       </div>
 

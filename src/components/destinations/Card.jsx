@@ -1,11 +1,13 @@
 import { updateFavorites } from "@/redux/reducers/authSlice";
 import { useAddRemoveFavDestMutation } from "@/redux/services/destService";
+import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Card = (props) => {
+  const router = useRouter();
   const dispatch = useDispatch();
 
   if (!props.data) return;
@@ -41,7 +43,8 @@ const Card = (props) => {
       <div className="w-full flex flex-col sm:flex-row border shadow rounded-lg h-auto md:h-[200px]">
         <img
           src={`${BASE_URL}/${images[0]}`}
-          className="w-full sm:w-[200px] h-full object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
+          className="w-full sm:w-[200px] h-full object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none cursor-pointer"
+          onClick={() => router.push(`/destinations/${destinationId}`)}
         />
 
         <div className="p-3">

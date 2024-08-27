@@ -62,9 +62,39 @@ const authSlice = createSlice({
       state.user = newUser;
       localStorage.setItem("user", JSON.stringify(newUser));
     },
+    updateLikes: (state, action) => {
+      const user = current(state.user);
+      const type = action.payload.action;
+      const likes = [...user.likes];
+      if (type === "liked") {
+        likes.push(action.payload.destinationId);
+      } else {
+        const indx = likes.indexOf(action.payload.destinationId);
+        if (indx > -1) {
+          likes.splice(indx, 1);
+        }
+      }
+      const newUser = { ...user, likes: likes };
+      state.user = newUser;
+      localStorage.setItem("user", JSON.stringify(newUser));
+    },
+    updateVisited: (state, action) => {
+      const user = current(state.user);
+      const visited = [...user.visited];
+      visited.push(action.payload.destinationId);
+      const newUser = { ...user, visited: visited };
+      state.user = newUser;
+      localStorage.setItem("user", JSON.stringify(newUser));
+    },
   },
 });
 
-export const { setUser, removeUser, updateFavorites } = authSlice.actions;
+export const {
+  setUser,
+  removeUser,
+  updateFavorites,
+  updateLikes,
+  updateVisited,
+} = authSlice.actions;
 
 export default authSlice.reducer;

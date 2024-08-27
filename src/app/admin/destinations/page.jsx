@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Head from "next/head";
 import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 import Topbar from "@/components/admin/Topbar";

@@ -1,11 +1,33 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import destination from "@/assets/images/destination.png";
 import { useGetDestinationsQuery } from "@/redux/services/adminService";
 import Card from "@/components/destinations/Card";
+import Select from "@/components/common/Select";
+
+const sortings = [
+  { label: "Most recent", value: "Most recent" },
+  { label: "Most visited", value: "Most visited" },
+  { label: "Most liked", value: "Most liked" },
+];
 
 const page = () => {
-  const { data, refetch } = useGetDestinationsQuery({ search: "" });
+  const [search, setSearch] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [sortBy, setSortBy] = useState("Sort By");
+
+  const { data, refetch } = useGetDestinationsQuery({
+    search: search,
+    sortBy: sortBy,
+  });
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(keyword);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [keyword]);
 
   const destinations = data?.data;
 
@@ -48,6 +70,30 @@ const page = () => {
         </div>
 
         <hr className="my-4 border" />
+
+        <div className="w-full flex flex-col gap-2 md:flex-row justify-between">
+          <div id="input" className="w-full lg:w-[40%]">
+            <input
+              type="text"
+              className="text-gray-600 w-full"
+              placeholder="Search..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+          </div>
+
+          <div id="sorting" className="w-full lg:w-[40%]">
+            <Select
+              values={sortings}
+              label={sortBy}
+              onChange={(val) => setSortBy(val)}
+            />
+          </div>
+
+          <button className="bg-primary text-white rounded-lg px-3 py-2 w-full lg:w-[20%]">
+            Clear Filters
+          </button>
+        </div>
 
         <div className="my-10">
           <div className="grid grid-cols-12 gap-4">

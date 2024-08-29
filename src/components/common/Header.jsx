@@ -5,7 +5,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 
 const navigation = [
-  { name: "Hotels", href: "#" },
+  { name: "Hotels", href: "/hotels" },
   { name: "Transport", href: "#" },
   { name: "Marketplace", href: "/posts" },
   { name: "Destinations", href: "/destinations" },

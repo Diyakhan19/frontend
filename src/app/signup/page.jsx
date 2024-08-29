@@ -19,7 +19,7 @@ const Signup = () => {
       role: "user",
       confirmPassword: "",
       image: null,
-      about: ""
+      about: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Full name is required"),
@@ -107,8 +107,8 @@ const Signup = () => {
                     field === "password" || field === "confirmPassword"
                       ? "password"
                       : field === "email"
-                        ? "email"
-                        : "text"
+                      ? "email"
+                      : "text"
                   }
                   autoComplete={field}
                   required
@@ -137,6 +137,7 @@ const Signup = () => {
               name="about"
               onChange={handleChange}
               value={values.about}
+              maxLength={200}
               className="block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
             />
           </div>

@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import Header from "@/components/common/Header";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Layout from "./page";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Providers>
         <body className={inter.className}>
-          <Header />
-
           <Toaster position="top-right" />
-          {children}
+
+          <Layout children={children} />
         </body>
       </Providers>
     </html>

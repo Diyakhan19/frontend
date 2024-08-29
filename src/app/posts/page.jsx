@@ -15,6 +15,7 @@ import { useGetPostsMutation } from "../../redux/services/postService";
 import Posts from "@/components/posts/Posts";
 import Select from "@/components/common/Select";
 import { cities, categories } from "@/components/common/constants";
+import { useSearchParams } from "next/navigation";
 
 const filters = [
   {
@@ -55,6 +56,8 @@ const filters = [
 ];
 
 const page = () => {
+  const params = useSearchParams();
+  const val = params.get("category");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const [getAllPosts, { isLoading }] = useGetPostsMutation();
@@ -62,7 +65,7 @@ const page = () => {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(val || "");
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -81,6 +84,77 @@ const page = () => {
     setSearch("");
     setCategory("");
     setCity("");
+    setMobileFiltersOpen(false);
+  };
+
+  const Filters = () => {
+    return (
+      <div>
+        <form className="space-y-5 divide-y divide-gray-200">
+          <div>
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-900">
+                Search
+              </legend>
+              <div className="space-y-3 pt-3">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search here..."
+                  className="w-full"
+                />
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="pt-5">
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-900">
+                Category
+              </legend>
+              <div className="space-y-3 pt-3">
+                <Select
+                  values={categories}
+                  label={category}
+                  onChange={(val) => {
+                    setCategory(val);
+                    setMobileFiltersOpen(false);
+                  }}
+                />
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="pt-5">
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-900">
+                City
+              </legend>
+              <div className="space-y-3 pt-3">
+                <Select
+                  values={cities}
+                  label={city}
+                  onChange={(val) => {
+                    setCity(val);
+                    setMobileFiltersOpen(false);
+                  }}
+                />
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="pt-5">
+            <div
+              className="px-3 py-2 cursor-pointer flex items-center justify-center bg-primary text-white rounded-lg"
+              onClick={clearFilters}
+            >
+              Clear Filters
+            </div>
+          </div>
+        </form>
+      </div>
+    );
   };
 
   return (
@@ -113,54 +187,8 @@ const page = () => {
                 </button>
               </div>
 
-              <form className="mt-4">
-                {filters.map((section) => (
-                  <Disclosure
-                    key={section.name}
-                    as="div"
-                    className="border-t border-gray-200 pb-4 pt-4"
-                  >
-                    <fieldset>
-                      <legend className="w-full px-2">
-                        <DisclosureButton className="group flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500">
-                          <span className="text-sm font-medium text-gray-900">
-                            {section.name}
-                          </span>
-                          <span className="ml-6 flex h-7 items-center">
-                            <ChevronDownIcon
-                              aria-hidden="true"
-                              className="h-5 w-5 rotate-0 transform group-data-[open]:-rotate-180"
-                            />
-                          </span>
-                        </DisclosureButton>
-                      </legend>
-                      <DisclosurePanel className="px-4 pb-2 pt-4">
-                        <div className="space-y-6">
-                          {section.options.map((option, optionIdx) => (
-                            <div
-                              key={option.value}
-                              className="flex items-center"
-                            >
-                              <input
-                                defaultValue={option.value}
-                                id={`${section.id}-${optionIdx}-mobile`}
-                                name={`${section.id}[]`}
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label
-                                htmlFor={`${section.id}-${optionIdx}-mobile`}
-                                className="ml-3 text-sm text-gray-500"
-                              >
-                                {option.label}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </DisclosurePanel>
-                    </fieldset>
-                  </Disclosure>
-                ))}
+              <form className="mt-4 px-3">
+                <Filters />
               </form>
             </DialogPanel>
           </div>
@@ -179,83 +207,25 @@ const page = () => {
 
           <div className="sticky top-0">
             <div className="pt-5 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
-              <aside>
-                <h2 className="sr-only">Filters</h2>
+              <h2 className="sr-only">Filters</h2>
 
-                <button
-                  type="button"
-                  onClick={() => setMobileFiltersOpen(true)}
-                  className="inline-flex items-center lg:hidden"
-                >
-                  <span className="text-sm font-medium text-gray-700">
-                    Filters
-                  </span>
-                  <PlusIcon
-                    aria-hidden="true"
-                    className="ml-1 h-5 w-5 flex-shrink-0 text-gray-400"
-                  />
-                </button>
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen(true)}
+                className="inline-flex items-center lg:hidden"
+              >
+                <span className="text-sm font-medium text-gray-700">
+                  Filters
+                </span>
+                <PlusIcon
+                  aria-hidden="true"
+                  className="ml-1 h-5 w-5 flex-shrink-0 text-gray-400"
+                />
+              </button>
 
-                <div className="hidden lg:block">
-                  <form className="space-y-5 divide-y divide-gray-200">
-                    <div>
-                      <fieldset>
-                        <legend className="block text-sm font-medium text-gray-900">
-                          Search
-                        </legend>
-                        <div className="space-y-3 pt-3">
-                          <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search here..."
-                            className="w-full"
-                          />
-                        </div>
-                      </fieldset>
-                    </div>
-
-                    <div className="pt-5">
-                      <fieldset>
-                        <legend className="block text-sm font-medium text-gray-900">
-                          Category
-                        </legend>
-                        <div className="space-y-3 pt-3">
-                          <Select
-                            values={categories}
-                            label={category}
-                            onChange={(val) => setCategory(val)}
-                          />
-                        </div>
-                      </fieldset>
-                    </div>
-
-                    <div className="pt-5">
-                      <fieldset>
-                        <legend className="block text-sm font-medium text-gray-900">
-                          City
-                        </legend>
-                        <div className="space-y-3 pt-3">
-                          <Select
-                            values={cities}
-                            label={city}
-                            onChange={(val) => setCity(val)}
-                          />
-                        </div>
-                      </fieldset>
-                    </div>
-
-                    <div className="pt-5">
-                      <div
-                        className="px-3 py-2 cursor-pointer flex items-center justify-center bg-primary text-white rounded-lg"
-                        onClick={clearFilters}
-                      >
-                        Clear Filters
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </aside>
+              <div className="hidden lg:block">
+                <Filters />
+              </div>
 
               <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3 overflow-auto">
                 <Posts posts={posts} />

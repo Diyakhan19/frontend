@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getCookie } from "cookies-next";
 
-export const adminService = createApi({
-  reducerPath: "admin",
+export const hotelService = createApi({
+  reducerPath: "hotelService",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL + "/api",
     prepareHeaders: (headers) => {
@@ -14,29 +14,30 @@ export const adminService = createApi({
     },
   }),
   endpoints: (builder) => ({
-    addDestination: builder.mutation({
+    createHotel: builder.mutation({
       query: (body) => ({
-        url: "/admin/destination",
+        url: `/hotel/new`,
         method: "POST",
         body: body,
       }),
     }),
-    getDestinations: builder.query({
-      query: ({ search, sortBy }) => ({
-        url: `/admin/destinations?search=${search}&sortBy=${sortBy}`,
-        method: "GET",
-      }),
-    }),
-    getUsers: builder.query({
-      query: ({ search }) => ({
-        url: `/admin/users?search=${search}`,
-        method: "GET",
-      }),
-    }),
-    updateUserStatus: builder.mutation({
+    getHotels: builder.mutation({
       query: (body) => ({
-        url: "/admin/user/status",
-        method: "PATCH",
+        url: `/hotel/all`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+    getPost: builder.query({
+      query: (postId) => ({
+        url: `/post/single?postId=${postId}`,
+        method: "GET",
+      }),
+    }),
+    addRemoveFavPost: builder.mutation({
+      query: (body) => ({
+        url: `/post/favorite`,
+        method: "POST",
         body: body,
       }),
     }),
@@ -44,8 +45,8 @@ export const adminService = createApi({
 });
 
 export const {
-  useAddDestinationMutation,
-  useGetDestinationsQuery,
-  useGetUsersQuery,
-  useUpdateUserStatusMutation,
-} = adminService;
+  useCreateHotelMutation,
+  useGetHotelsMutation,
+  useGetPostQuery,
+  useAddRemoveFavPostMutation,
+} = hotelService;

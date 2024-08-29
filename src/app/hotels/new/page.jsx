@@ -5,58 +5,51 @@ import { useState } from "react";
 import * as yup from "yup";
 import Select from "@/components/common/Select";
 import toast from "react-hot-toast";
-import { useCreatePostMutation } from "@/redux/services/postService";
 import Loader from "@/components/common/Loader";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { cities, categories } from "@/components/common/constants";
+import {
+  cities,
+  facilities as facilitiesArr,
+} from "@/components/common/constants";
+import { useCreateHotelMutation } from "@/redux/services/hotelService";
 
 const page = () => {
   const router = useRouter();
-  const [createPost, { isLoading }] = useCreatePostMutation();
+  const [createHotel, { isLoading }] = useCreateHotelMutation();
 
   const { user } = useSelector((state) => state.auth);
 
   const formik = useFormik({
     initialValues: {
-      title: "",
+      name: "",
       description: "",
       address: "",
       city: "",
-      price: "",
+      mapUrl: "",
       category: "",
-      features: [],
+      facilities: [],
       images: [],
     },
     validationSchema: yup.object({
-      title: yup.string().required("Title is required"),
+      name: yup.string().required("Name is required"),
       description: yup.string().required("Description is required"),
       address: yup.string().required("Address is required"),
       city: yup.string().required("City is required"),
-      price: yup.string().required("Price is required"),
-      category: yup.string().required("Category is required"),
-      features: yup.array().min(1, "Features is required"),
+      mapUrl: yup.string().required("Map URL is required"),
+      facilities: yup.array().min(1, "Facilities is required"),
     }),
     onSubmit: async (values) => {
-      const {
-        title,
-        description,
-        city,
-        category,
-        address,
-        price,
-        features,
-        images,
-      } = values;
+      const { name, description, city, address, mapUrl, facilities, images } =
+        values;
 
       const formData = new FormData();
-      formData.append("title", title);
+      formData.append("name", name);
       formData.append("description", description);
       formData.append("address", address);
-      formData.append("price", price);
+      formData.append("mapUrl", mapUrl);
       formData.append("city", city);
-      formData.append("category", category);
-      formData.append("features", JSON.stringify(features));
+      formData.append("facilities", JSON.stringify(facilities));
 
       if (images.length !== 0) {
         for (var i = 0; i < images.length; i++) {
@@ -65,7 +58,7 @@ const page = () => {
       }
 
       try {
-        const res = await createPost(formData).unwrap();
+        const res = await createHotel(formData).unwrap();
         toast.success(res.message);
         router.push(`/profile?userId=${user?.userId}`);
       } catch (err) {
@@ -78,37 +71,27 @@ const page = () => {
   const { values, errors, touched, handleChange, handleSubmit, setValues } =
     formik;
 
-  const {
-    title,
-    description,
-    address,
-    price,
-    category,
-    city,
-    features,
-    images,
-  } = values;
+  const { name, description, address, mapUrl, city, facilities, images } =
+    values;
 
-  const [feature, setFeature] = useState("");
+  const [facility, setFacility] = useState(null);
 
-  const onChangeFeature = () => {
-    if (feature === "") return;
+  const onChangeFacility = (item) => {
+    const arr = [...facilities, item.toLowerCase()];
 
-    const arr = [...features, feature];
     setValues({
       ...values,
-      features: arr,
+      facilities: arr,
     });
-
-    setFeature("");
+    setFacility(null);
   };
 
-  const onRemoveFeature = (indx) => {
-    const arr = [...features];
+  const onRemoveFacility = (indx) => {
+    const arr = [...facilities];
     arr.splice(indx, 1);
     setValues({
       ...values,
-      features: arr,
+      facilities: arr,
     });
   };
 
@@ -126,6 +109,10 @@ const page = () => {
     imgUrls[i] = URL.createObjectURL(images[i]);
   }
 
+  const filteredFacilities = facilitiesArr.filter((item) =>
+    !facility ? true : item.startsWith(facility) || item.includes(facility)
+  );
+
   return (
     <div>
       <div className="m-2 px-5 py-10 flex items-center justify-center flex-col gap-3 w-full border rounded-lg shadow">
@@ -136,7 +123,7 @@ const page = () => {
         >
           <div className="flex w-full justify-between items-center mb-4">
             <h2 className="font-bold text-lg text-gray-700">
-              Create A New Post
+              List a New Hotel
             </h2>
             <div className="flex gap-2">
               <button
@@ -158,34 +145,18 @@ const page = () => {
           <div className="flex w-full flex-col justify-between sm:flex-row gap-2">
             <div className="flex p-5 border shadow rounded-md flex-col w-full md:w-[50%] items-center justify-center gap-3">
               <div className="w-full">
-                <label>Post Title</label>
+                <label>Hotel Name</label>
                 <input
                   type="text"
                   className="w-full"
-                  value={title}
-                  id="title"
-                  name="title"
-                  placeholder="Title here..."
+                  value={name}
+                  id="name"
+                  name="name"
+                  placeholder="Name here..."
                   onChange={handleChange}
                 />
-                {errors.title && touched.title && (
-                  <p className="text-red-500">{errors.title}</p>
-                )}
-              </div>
-
-              <div className="w-full">
-                <label>Price</label>
-                <input
-                  type="number"
-                  className="w-full rounded-[6px] border border-borderCol"
-                  value={price}
-                  id="price"
-                  name="price"
-                  placeholder="Price here..."
-                  onChange={handleChange}
-                />
-                {errors.price && touched.price && (
-                  <p className="text-red-500">{errors.price}</p>
+                {errors.name && touched.name && (
+                  <p className="text-red-500">{errors.name}</p>
                 )}
               </div>
 
@@ -224,6 +195,23 @@ const page = () => {
               </div>
 
               <div className="w-full">
+                <label>Map URL</label>
+                <input
+                  type="text"
+                  rows={8}
+                  className="w-full rounded-[6px] border border-borderCol"
+                  value={mapUrl}
+                  id="mapUrl"
+                  name="mapUrl"
+                  placeholder="Map url here..."
+                  onChange={handleChange}
+                />
+                {errors.mapUrl && touched.mapUrl && (
+                  <p className="text-red-500">{errors.mapUrl}</p>
+                )}
+              </div>
+
+              <div className="w-full">
                 <label>City</label>
                 <Select
                   label={city}
@@ -234,57 +222,51 @@ const page = () => {
                   <p className="text-red-500">{errors.city}</p>
                 )}
               </div>
-
-              <div className="w-full">
-                <label>Category</label>
-                <Select
-                  label={category}
-                  values={categories}
-                  onChange={(val) => setValues({ ...values, category: val })}
-                />
-                {errors.category && touched.category && (
-                  <p className="text-red-500">{errors.category}</p>
-                )}
-              </div>
             </div>
 
             <div className="flex w-full md:w-[50%] flex-col border p-5 shadow rounded-lg">
               <div className="relative">
-                <label>Features</label>
+                <label>Facilities</label>
                 <input
                   type="text"
                   className="w-full"
-                  value={feature}
-                  id="feature"
-                  name="feature"
-                  placeholder="Feature here..."
-                  onChange={(e) => setFeature(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      onChangeFeature();
-                    }
-                  }}
+                  value={facility}
+                  id="facility"
+                  name="facility"
+                  placeholder="Facility here..."
+                  onChange={(e) => setFacility(e.target.value.toLowerCase())}
+                  onClick={() => setFacility("")}
                 />
-                {errors.features && touched.features && (
-                  <p className="text-red-500">{errors.features}</p>
+                {errors.facilities && touched.facilities && (
+                  <p className="text-red-500">{errors.facilities}</p>
                 )}
-                <div
-                  className="absolute cursor-pointer top-[30px] right-3 bg-gray-600 text-white py-1 px-2 rounded-md text-sm"
-                  onClick={onChangeFeature}
-                >
-                  Add +
-                </div>
+
+                {facility !== null && (
+                  <div className="absolute w-full cursor-pointer py-2 h-[300px] border shadow overflow-auto left-0 top-[70px] px-2 bg-white rounded-md text-sm">
+                    {filteredFacilities.map((item) => {
+                      if (!facilities.includes(item)) {
+                        return (
+                          <div
+                            className="text-gray-600 p-2 border-b capitalize hover:bg-gray-200 rounded-md"
+                            onClick={() => onChangeFacility(item)}
+                          >
+                            {item}
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+                )}
               </div>
               <div className="my-2">
-                {features.length === 0 ? (
+                {facilities.length === 0 ? (
                   <div className="flex border rounded-lg items-center justify-center min-h-[100px] text-gray-500">
-                    No Features added
+                    No facilities added
                   </div>
                 ) : (
                   <div className="flex gap-1 flex-wrap border rounded-lg p-2">
-                    {features.map((item, indx) => (
-                      <div className="bg-gray-500 border text-white shadow px-3 py-2 rounded-full flex gap-2">
+                    {facilities.map((item, indx) => (
+                      <div className="bg-gray-500 border text-white shadow px-3 py-2 capitalize rounded-full flex gap-2">
                         {item}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +275,7 @@ const page = () => {
                           strokeWidth="1.5"
                           stroke="currentColor"
                           class="size-6"
-                          onClick={() => onRemoveFeature(indx)}
+                          onClick={() => onRemoveFacility(indx)}
                         >
                           <path
                             strokeLinecap="round"

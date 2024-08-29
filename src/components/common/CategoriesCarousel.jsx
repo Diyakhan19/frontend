@@ -2,6 +2,7 @@
 import React from "react";
 import Slider from "react-slick";
 import { categories } from "./constants";
+import { useRouter } from "next/navigation";
 
 function SampleNextArrow(props) {
   const { onClick } = props;
@@ -74,6 +75,12 @@ const CategoriesCarousel = () => {
     ],
   };
 
+  const router = useRouter();
+
+  const onClickCategory = (category) => {
+    router.push(`/posts?category=${encodeURIComponent(category)}`);
+  };
+
   return (
     <>
       <div className="relative">
@@ -81,7 +88,10 @@ const CategoriesCarousel = () => {
           {categories.map((item, indx) => {
             return (
               <div>
-                <div className="rounded-xl overflow-hidden relative w-[97%] cursor-pointer hover:opacity-80">
+                <div
+                  className="rounded-xl overflow-hidden relative w-[97%] cursor-pointer hover:opacity-80"
+                  onClick={() => onClickCategory(item.label)}
+                >
                   <img
                     src={item.image}
                     alt="Card"

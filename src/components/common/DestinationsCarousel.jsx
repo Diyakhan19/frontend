@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Slider from "react-slick";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -53,7 +53,8 @@ function SamplePrevArrow(props) {
   );
 }
 
-const Carousel = (props) => {
+const DestinationsCarousel = (props) => {
+  const router = useRouter();
   let { data } = props;
 
   // const router = useRouter();
@@ -97,7 +98,14 @@ const Carousel = (props) => {
                 </div>
 
                 <div className="text-white h-[150px] bg-gradient-to-t from-black via-black/70 to-transparent w-full absolute bottom-0 md:leading-[35px] flex items-center justify-center flex-col">
-                  <h3 className="font-bold text-[25px]">{item.title}</h3>
+                  <h3
+                    className="font-bold text-[25px] hover:scale-110 cursor-pointer"
+                    onClick={() =>
+                      router.push(`/destinations/${item.destinationId}`)
+                    }
+                  >
+                    {item.title}
+                  </h3>
                   <h3 className="font-bold">{item.district}</h3>
                 </div>
               </div>
@@ -123,4 +131,4 @@ const Carousel = (props) => {
   );
 };
 
-export default Carousel;
+export default DestinationsCarousel;

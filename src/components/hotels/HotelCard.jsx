@@ -12,7 +12,7 @@ const Card = (props) => {
 
   if (!props.data) return;
 
-  const { destinationId, name, address, description, images, rating, _count } =
+  const { hotelId, name, address, description, images, rating, _count } =
     props.data;
 
   return (
@@ -21,7 +21,7 @@ const Card = (props) => {
         <img
           src={`${BASE_URL}/${images[0]}`}
           className="w-full sm:w-[200px] h-full object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none cursor-pointer"
-          onClick={() => router.push(`/destinations/${destinationId}`)}
+          onClick={() => router.push(`/hotels/${hotelId}`)}
         />
 
         <div className="p-3">

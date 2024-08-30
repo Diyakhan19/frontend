@@ -21,6 +21,13 @@ export const hotelService = createApi({
         body: body,
       }),
     }),
+    addRoom: builder.mutation({
+      query: (body) => ({
+        url: `/hotel/room`,
+        method: "POST",
+        body: body,
+      }),
+    }),
     getHotels: builder.mutation({
       query: (body) => ({
         url: `/hotel/all`,
@@ -28,15 +35,15 @@ export const hotelService = createApi({
         body: body,
       }),
     }),
-    getPost: builder.query({
+    getHotel: builder.query({
       query: (postId) => ({
-        url: `/post/single?postId=${postId}`,
+        url: `/hotel/single?hotelId=${postId}`,
         method: "GET",
       }),
     }),
-    addRemoveFavPost: builder.mutation({
+    booking: builder.mutation({
       query: (body) => ({
-        url: `/post/favorite`,
+        url: `/hotel/booking`,
         method: "POST",
         body: body,
       }),
@@ -46,7 +53,8 @@ export const hotelService = createApi({
 
 export const {
   useCreateHotelMutation,
+  useAddRoomMutation,
   useGetHotelsMutation,
-  useGetPostQuery,
-  useAddRemoveFavPostMutation,
+  useGetHotelQuery,
+  useBookingMutation,
 } = hotelService;

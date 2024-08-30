@@ -16,13 +16,20 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { user: authUser } = useSelector((state) => state.auth);
+  const { user: authUser, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   const [user, setUser] = useState({});
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
     setUser(authUser);
   }, [authUser]);
+
+  useEffect(() => {
+    setIsLogin(isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <header className="bg-white">
@@ -31,13 +38,9 @@ const Header = () => {
         className="mx-auto flex items-center justify-between p-4 lg:px-8 border-b"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <a href="/home" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              alt=""
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              className="h-8 w-auto"
-            />
+            <img alt="" src="/logo.png" className="h-10 w-auto" />
           </a>
         </div>
         <div className="flex lg:hidden">
@@ -61,33 +64,53 @@ const Header = () => {
             </a>
           ))}
           <div className="hidden lg:flex lg:flex-1 justify-center items-center ml-10">
-            <a
-              href={`/profile?userId=${user?.userId}`}
-              className="group block flex-shrink-0"
-            >
-              <div className="flex justify-center items-center">
-                <div className="mr-3">
-                  <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                    View profile
-                  </p>
+            {isLogin ? (
+              <a
+                href={`/profile?userId=${user?.userId}`}
+                className="group block flex-shrink-0"
+              >
+                <div className="flex justify-center items-center">
+                  <div className="mr-3">
+                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
+                      View profile
+                    </p>
+                  </div>
+                  <div>
+                    <img
+                      alt=""
+                      src={
+                        user?.image
+                          ? `${BASE_URL}/${user?.image}`
+                          : "/images/female.png"
+                      }
+                      onError={(e) => (e.target.src = "/images/female.png")}
+                      className="inline-block h-9 w-9 rounded-full object-cover"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <img
-                    alt=""
-                    src={
-                      user?.image
-                        ? `${BASE_URL}/${user?.image}`
-                        : "/images/female.png"
-                    }
-                    onError={(e) => (e.target.src = "/images/female.png")}
-                    className="inline-block h-9 w-9 rounded-full object-cover"
+              </a>
+            ) : (
+              <a
+                className="-mx-3 flex gap-1 items-center justify-center rounded-full px-3 py-2 text-base border shadow font-semibold leading-7 text-gray-900 hover:bg-gray-300"
+                href="/login"
+              >
+                <p className="text-sm font-bold">Login</p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class="size-4"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
                   />
-                </div>
-              </div>
-            </a>
+                </svg>
+              </a>
+            )}
           </div>
         </div>
       </nav>

@@ -6,6 +6,8 @@ import Link from "next/link";
 import Posts from "@/components/posts/Posts";
 import { useState } from "react";
 import Card from "@/components/destinations/Card";
+import HotelCard from "@/components/hotels/HotelCard";
+import { deleteCookie } from "cookies-next";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -35,13 +37,18 @@ const page = () => {
     .filter((item) => item.destinationId)
     .map((item) => item.destination);
 
+  const onClickLogout = () => {
+    deleteCookie("token");
+    localStorage.clear();
+  };
+
   return (
     <>
       <main className="bg-gray-100 bg-opacity-25">
-        <div className="lg:w-8/12 lg:mx-auto mb-8">
+        <div className="lg:w-10/12 lg:mx-auto mb-8">
           <header className="flex flex-col sm:flex-row flex-wrap items-center p-4 md:py-8 rounded-lg shadow border my-2">
-            <div className="w-full sm:w-[80%] flex flex-col sm:flex-row gap-2">
-              <div className="md:w-3/12 md:ml-16 flex items-center justify-center">
+            <div className="w-full sm:w-[75%] flex flex-col sm:flex-row gap-2">
+              <div className="md:w-3/12 flex items-center justify-center">
                 <img
                   className="w-40 h-40 object-cover rounded-full
                border-2 border-primary p-1"
@@ -118,16 +125,76 @@ const page = () => {
               </div>
             </div>
 
-            {isAuthenticated && (
-              <div className="flex flex-col gap-2 items-center justify-center w-full sm:w-[20%]">
-                <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
-                  <Link className="text-gray-700" href="/posts/new">
-                    Post a listing
-                  </Link>
+            {isAuthenticated && isMe && (
+              <div className="flex flex-col gap-2 items-center justify-between h-full w-full sm:w-[25%]">
+                <div className="flex flex-col gap-2 mb-6">
+                  <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
+                    <Link className="text-gray-700" href="/posts/new">
+                      Post a listing
+                    </Link>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      class="size-4"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+
+                  {user?.roles?.includes("vendor") && (
+                    <>
+                      <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex border shadow items-center justify-between rounded-full">
+                        <Link className="text-gray-700" href="/hotels/new">
+                          Post a hotel
+                        </Link>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          class="size-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+
+                      <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
+                        <Link className="text-gray-700" href="/transports/new">
+                          Post a transport
+                        </Link>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          class="size-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <a
+                  className="min-w-[180px] bg-red-500 hover:bg-gray-400 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full"
+                  onClick={onClickLogout}
+                  href="/home"
+                >
+                  <p className="text-white">Logout</p>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     class="size-4"
+                    fill="white"
                   >
                     <path
                       fillRule="evenodd"
@@ -135,45 +202,7 @@ const page = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                </div>
-
-                {user?.roles?.includes("vendor") && (
-                  <>
-                    <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex border shadow items-center justify-between rounded-full">
-                      <Link className="text-gray-700" href="/hotels/new">
-                        Post a hotel
-                      </Link>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="size-4"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-
-                    <div className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
-                      <Link className="text-gray-700" href="/transports/new">
-                        Post a transport
-                      </Link>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="size-4"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  </>
-                )}
+                </a>
               </div>
             )}
           </header>
@@ -279,7 +308,11 @@ const page = () => {
                 user?.hotels.length === 0 ? (
                   "No hotels found"
                 ) : (
-                  "Hotels"
+                  <div className="grid grid-cols-6 gap-4">
+                    {user.hotels.map((item) => (
+                      <HotelCard data={item} />
+                    ))}
+                  </div>
                 )
               ) : user?.favorites.length === 0 ? (
                 "No favorites found"

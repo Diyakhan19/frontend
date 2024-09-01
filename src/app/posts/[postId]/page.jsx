@@ -215,19 +215,6 @@ const page = () => {
                 <span className="font-bold text-gray-700">Description:</span>
                 <p className="text-gray-600 text-sm mt-2">{description}</p>
               </div>
-
-              <hr className="mt-2" />
-
-              <div className="my-3">
-                <span className="font-bold text-gray-700">Features:</span>
-                <div className="flex gap-2 items-center mt-2 flex-wrap">
-                  {features.map((item) => (
-                    <button className="bg-gray-300 text-gray-700 py-2 px-4 rounded-full font-bold">
-                      {item}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </div>

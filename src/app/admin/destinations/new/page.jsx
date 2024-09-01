@@ -131,6 +131,7 @@ const page = () => {
                 className="w-full"
                 required
                 accept="image/*"
+                name="images"
               />
             </div>
             <div className="flex items-center gap-2 justify-end w-full">

@@ -146,7 +146,7 @@ const page = () => {
             </div>
             <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 justify-between gap-2 items-center">
               {images.map((image, indx) => {
-                if (indx > -1) {
+                if (indx > 2) {
                   return (
                     <img
                       src={`${BASE_URL}/${image}`}
@@ -156,11 +156,6 @@ const page = () => {
                   );
                 }
               })}
-              <img
-                src={`${BASE_URL}/${images[0]}`}
-                alt="Product"
-                className="object-cover w-full h-full lg:h-[120px] xl:h-[177px]"
-              />
             </div>
           </div>
 
@@ -247,7 +242,7 @@ const page = () => {
         <h2 className="text-2xl font-semibold mb-4">Available Rooms</h2>
         <hr className="my-4" />
 
-        <div className="w-[1200px] min-w-[1200px] overflow-x-auto">
+        <div className="w-full min-w-[1200px] overflow-x-auto">
           <div className="bg-gray-700 text-white grid grid-cols-6 divide-x-[1px] divide-gray-300 w-full">
             <div className="py-3.5 w-full pl-4 pr-3 text-left text-sm font-semibold sm:pl-6">
               Image

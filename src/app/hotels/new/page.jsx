@@ -40,6 +40,11 @@ const page = () => {
       facilities: yup.array().min(1, "Facilities is required"),
     }),
     onSubmit: async (values) => {
+
+      if(images.length < 8) {
+        return toast.error("At least 8 images are required")
+      }
+
       const { name, description, city, address, mapUrl, facilities, images } =
         values;
 

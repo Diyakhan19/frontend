@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const navigation = [
   { name: "Hotels", href: "/hotels" },
-  { name: "Transport", href: "#" },
+  { name: "Transport", href: "/transports" },
   { name: "Marketplace", href: "/posts" },
   { name: "Destinations", href: "/destinations" },
 ];

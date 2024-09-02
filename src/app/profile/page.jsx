@@ -128,10 +128,11 @@ const page = () => {
             {isAuthenticated && isMe && (
               <div className="flex flex-col gap-2 items-center justify-between h-full w-full sm:w-[25%]">
                 <div className="flex flex-col gap-2 mb-6">
-                  <a href="/posts/new" className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
-                    <p className="text-gray-700">
-                      Post a listing
-                    </p>
+                  <a
+                    href="/posts/new"
+                    className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full"
+                  >
+                    <p className="text-gray-700">Post a listing</p>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -147,10 +148,11 @@ const page = () => {
 
                   {user?.roles?.includes("vendor") && (
                     <>
-                      <a  href="/hotels/new" className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex border shadow items-center justify-between rounded-full">
-                        <p className="text-gray-700">
-                          Post a hotel
-                        </p>
+                      <a
+                        href="/hotels/new"
+                        className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex border shadow items-center justify-between rounded-full"
+                      >
+                        <p className="text-gray-700">Post a hotel</p>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
@@ -164,10 +166,11 @@ const page = () => {
                         </svg>
                       </a>
 
-                      <a  href="/transports/new" className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full">
-                        <p className="text-gray-700">
-                          Post a transport
-                        </p>
+                      <a
+                        href="/transports/new"
+                        className="min-w-[180px] hover:bg-gray-200 cursor-pointer py-1 px-3 gap-2 flex shadow border items-center justify-between rounded-full"
+                      >
+                        <p className="text-gray-700">Post a transport</p>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"

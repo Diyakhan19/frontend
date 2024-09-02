@@ -95,3 +95,13 @@ export const facilities = [
   "library",
   "fireplace",
 ];
+
+export const transports = [
+  { label: "Car", value: "Car" },
+  { label: "Bus", value: "Bus" },
+  { label: "Jeep", value: "Jeep" },
+  { label: "Bike", value: "Bike" },
+  { label: "Truck", value: "Truck" },
+  { label: "Van", value: "Van" },
+  { label: "HiAce", value: "HiAce" },
+];

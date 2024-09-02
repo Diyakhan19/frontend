@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import destination from "@/assets/images/destination.png";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   useAddRemoveFavDestMutation,
   useGetDestByIdQuery,
@@ -23,6 +23,7 @@ import moment from "moment";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = () => {
+  const router = useRouter();
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -47,7 +48,7 @@ const page = () => {
   }, [destination]);
 
   // Add remove favorite
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const favorites = user?.favorites;
 
@@ -62,6 +63,8 @@ const page = () => {
 
   // Add/remove favorite
   const onClickFavIcon = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       const res = await addRemoveFavDest({ destinationId }).unwrap();
       dispatch(updateFavorites({ key: "destinations", data: res.data }));
@@ -74,6 +77,8 @@ const page = () => {
 
   // Like/unlike a destination
   const onClickLike = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       const res = await likeUnlikeDestination({
         destinationId: destId,
@@ -90,6 +95,8 @@ const page = () => {
 
   // Save destination visited
   const onClickVisited = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       const res = await visitedDestination({ destinationId: destId }).unwrap();
       dispatch(updateVisited(res.data));
@@ -101,6 +108,8 @@ const page = () => {
 
   // Add a review
   const saveReview = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       if (rating.review === "") return toast.error("Please write a review");
 

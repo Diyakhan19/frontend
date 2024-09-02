@@ -87,6 +87,12 @@ const authSlice = createSlice({
       state.user = newUser;
       localStorage.setItem("user", JSON.stringify(newUser));
     },
+    updateBookmarks: (state, action) => {
+      const user = current(state.user);
+      const newUser = { ...user, bookmarks: action.payload };
+      state.user = newUser;
+      localStorage.setItem("user", JSON.stringify(newUser));
+    },
   },
 });
 
@@ -96,6 +102,7 @@ export const {
   updateFavorites,
   updateLikes,
   updateVisited,
+  updateBookmarks,
 } = authSlice.actions;
 
 export default authSlice.reducer;

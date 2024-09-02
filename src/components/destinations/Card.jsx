@@ -15,7 +15,7 @@ const Card = (props) => {
   const { destinationId, title, district, description, images, _count } =
     props.data;
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const favorites = user?.favorites;
 
@@ -26,6 +26,8 @@ const Card = (props) => {
   const [addRemoveFavDest] = useAddRemoveFavDestMutation();
 
   const onClickFavIcon = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       const res = await addRemoveFavDest({ destinationId }).unwrap();
       dispatch(updateFavorites({ key: "destinations", data: res.data }));

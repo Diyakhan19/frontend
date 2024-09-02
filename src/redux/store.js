@@ -6,6 +6,7 @@ import { userService } from "./services/userService";
 import { postService } from "./services/postService";
 import { hotelService } from "./services/hotelService";
 import { destService } from "./services/destService";
+import { transportService } from "./services/transportService";
 
 import authSlice from "./reducers/authSlice";
 
@@ -18,6 +19,7 @@ export const store = configureStore({
     [postService.reducerPath]: postService.reducer,
     [destService.reducerPath]: destService.reducer,
     [hotelService.reducerPath]: hotelService.reducer,
+    [transportService.reducerPath]: transportService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat(
@@ -26,7 +28,8 @@ export const store = configureStore({
       userService.middleware,
       postService.middleware,
       destService.middleware,
-      hotelService.middleware
+      hotelService.middleware,
+      transportService.middleware
     ),
 });
 

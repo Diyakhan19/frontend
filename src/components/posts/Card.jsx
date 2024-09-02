@@ -15,7 +15,7 @@ const Card = (props) => {
   const paramsUserId = params.get("userId");
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const favorites = user?.favorites;
   const post = props?.post;
 
@@ -33,6 +33,8 @@ const Card = (props) => {
   const [addRemoveFavPost] = useAddRemoveFavPostMutation();
 
   const onClickFavIcon = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
     try {
       const res = await addRemoveFavPost({ postId }).unwrap();
       dispatch(updateFavorites({ key: "post", data: res.data }));

@@ -2,7 +2,7 @@
 import AddRoom from "@/components/modals/AddRoom";
 import BookingModal from "@/components/modals/BookingModal";
 import { useGetHotelQuery } from "@/redux/services/hotelService";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import StarRatings from "react-star-ratings";
@@ -11,6 +11,7 @@ import FslightboxReact from "fslightbox-react";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = () => {
+  const router = useRouter();
   const params = useParams();
   const hotelId = +params?.hotelId;
 
@@ -24,7 +25,7 @@ const page = () => {
     data: null,
   });
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const { data, refetch } = useGetHotelQuery(hotelId);
 
@@ -75,6 +76,11 @@ const page = () => {
       slide: number,
     });
   }
+
+  const onClickBookNow = (room) => {
+    if (!isAuthenticated) return router.push("/login");
+    setBookingModal({ isOpen: true, data: room });
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -340,9 +346,7 @@ const page = () => {
                         ) : (
                           <button
                             className="bg-green-600 px-3 w-full py-2 rounded text-white"
-                            onClick={() =>
-                              setBookingModal({ isOpen: true, data: room })
-                            }
+                            onClick={onClickBookNow}
                           >
                             Book Now
                           </button>

@@ -7,6 +7,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import StarRatings from "react-star-ratings";
 import FslightboxReact from "fslightbox-react";
+import moment from "moment";
+import { useSaveReviewMutation } from "@/redux/services/destService";
+import toast from "react-hot-toast";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -20,6 +23,11 @@ const page = () => {
     data: null,
   });
 
+  const [rating, setRating] = useState({
+    stars: 0,
+    review: "",
+  });
+
   const [bookingModal, setBookingModal] = useState({
     isOpen: false,
     data: null,
@@ -28,6 +36,7 @@ const page = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const { data, refetch } = useGetHotelQuery(hotelId);
+  const [addReview] = useSaveReviewMutation();
 
   const hotel = data?.data;
 
@@ -42,6 +51,7 @@ const page = () => {
   if (!hotel) return;
 
   const {
+    hoteId,
     userId,
     name,
     address,
@@ -51,7 +61,7 @@ const page = () => {
     images,
     rooms,
     reviews,
-    rating,
+    rating: stars,
     _count,
   } = hotel;
 
@@ -81,6 +91,33 @@ const page = () => {
     if (!isAuthenticated) return router.push("/login");
     setBookingModal({ isOpen: true, data: room });
   };
+
+  // Add a review
+  const saveReview = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
+    try {
+      if (rating.review === "") return toast.error("Please write a review");
+
+      const res = await addReview({
+        hotelId: hotelId,
+        stars: rating.stars,
+        review: rating.review,
+      }).unwrap();
+
+      toast.success(res.message);
+      refetch();
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const userDidBooking = hotel.rooms.some((item) =>
+    item.bookings.map((booking) => booking.userId).includes(user?.userId)
+  );
+
+  const alreadyReviewed = reviews.find((item) => item.userId === user?.userId);
 
   return (
     <div className="container mx-auto p-6">
@@ -168,7 +205,7 @@ const page = () => {
           <div className="col-span-12 border shadow h-full px-5 lg:col-span-3">
             <div className="flex flex-col items-center gap-4 mt-4">
               <StarRatings
-                rating={rating}
+                rating={stars}
                 starRatedColor="#ffa534"
                 numberOfStars={5}
                 name="rating"
@@ -285,13 +322,15 @@ const page = () => {
                     pricePerNight,
                     view,
                     images,
-                    isBooked,
                     checkin,
                     checkout,
                   } = room;
 
                   const firstImg =
                     Array.isArray(images) && images.length !== 0 && images[0];
+
+                  const isBooked =
+                    checkout && moment(checkout).isAfter(moment());
 
                   return (
                     <div key={idx} className="grid grid-cols-6">
@@ -346,7 +385,7 @@ const page = () => {
                         ) : (
                           <button
                             className="bg-green-600 px-3 w-full py-2 rounded text-white"
-                            onClick={onClickBookNow}
+                            onClick={() => onClickBookNow(room)}
                           >
                             Book Now
                           </button>
@@ -385,25 +424,93 @@ const page = () => {
       </div>
 
       <div className="mb-6 p-5 border rounded-md" id="reviews">
-        <h2 className="text-2xl font-semibold mb-4">Guest Reviews</h2>
+        <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+
+        {userDidBooking && !alreadyReviewed && (
+          <div className="flex gap-3 justify-between flex-col md:flex-row my-2">
+            <h1 className="text-gray-800 text-md mb-3">
+              Looks like you have visited this hotel and haven't reviewd yet.
+              Please leave a review.
+            </h1>
+            <div className="flex flex-col border rounded-lg p-5 min-w-[50%]">
+              <div className="flex justify-between">
+                <p className="font-bold my-2 text-gray-800">Leave a review:</p>
+                <button
+                  className="bg-primary px-4 py-1 text-white"
+                  onClick={saveReview}
+                >
+                  Save
+                </button>
+              </div>
+              <div className="flex items-center gap-2 justify-start">
+                <p className="text-gray-700 text-md font-semibold mt-[3px]">
+                  Rating:
+                </p>
+                <div>
+                  <StarRatings
+                    rating={rating.stars}
+                    starRatedColor="#ffa534"
+                    starHoverColor="#ffa534"
+                    changeRating={(stars) =>
+                      setRating({ ...rating, stars: stars })
+                    }
+                    numberOfStars={5}
+                    name="rating"
+                    starDimension="30px"
+                    starSpacing="2px"
+                  />
+                </div>
+              </div>
+              <textarea
+                className="flex w-full border-borderCol my-2"
+                rows={4}
+                value={rating.review}
+                onChange={(e) =>
+                  setRating({ ...rating, review: e.target.value })
+                }
+              ></textarea>
+            </div>
+          </div>
+        )}
+
         <hr className="my-4" />
-        {reviews.map((review, index) => (
-          <div
-            key={index}
-            className="border border-gray-200 rounded-lg p-4 mb-4"
-          >
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{review.reviewer}</h3>
-              <div className="flex items-center">
-                <span className="text-yellow-500 font-semibold text-xl">
-                  {review.rating}
-                </span>
-                <span className="ml-2 text-gray-600">/ 5</span>
+
+        {reviews.length === 0 ? (
+          <div className="h-[200px] flex items-center justify-center">
+            No reviews available
+          </div>
+        ) : (
+          reviews.map((review) => (
+            <div className="flex space-x-4 text-sm text-gray-500">
+              <div className="flex-none py-10">
+                <img
+                  alt=""
+                  src={`${BASE_URL}/${review.user.image}`}
+                  className="h-10 w-10 rounded-full bg-gray-100 object-cover"
+                  onError={(e) => (e.target.src = "/images/female.png")}
+                />
+              </div>
+              <div className="flex-1 py-5 border-b border-gray-200">
+                <h3 className="font-medium text-gray-900">
+                  {review.user.name}
+                </h3>
+                <p>{moment(review.createdAt).format("MMMM DD, YYYY")}</p>
+                <div className="mt-2 flex items-center">
+                  <StarRatings
+                    rating={review.stars}
+                    starRatedColor="#ffa534"
+                    numberOfStars={5}
+                    name="rating"
+                    starDimension="20px"
+                    starSpacing="2px"
+                  />
+                </div>
+
+                <p className="mt-3">{review.text}</p>
               </div>
             </div>
-            <p className="text-gray-700 mt-2">{review.comment}</p>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

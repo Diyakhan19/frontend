@@ -96,8 +96,10 @@ const TranportCard = (props) => {
               className={`font-semibold text-sm capitalize rounded-full px-2 flex items-center justify-center ${
                 status === "available"
                   ? "bg-green-300"
-                  : status === "booked"
-                  ? "bg-yellow-300"
+                  : status === "in maintenance"
+                  ? "bg-yellow-400"
+                  : status === "rented"
+                  ? "bg-blue-300"
                   : "bg-red-300"
               }`}
             >
@@ -105,7 +107,7 @@ const TranportCard = (props) => {
             </p>
           </div>
           <h4 className="text-xs">{city}</h4>
-          <div className="my-1 flex justify-between">
+          <div className="my-2 flex justify-between">
             <div className="px-1">
               <p className="text-[12px] font-bold">
                 Rs. {pricing.hour.price} / hr
@@ -116,7 +118,7 @@ const TranportCard = (props) => {
             </div>
 
             {pricing?.day?.price && pricing?.day?.maxDistance && (
-              <div className="px-2 lg:px-[10px] border-x">
+              <div className="px-2 lg:px-[6px] border-x">
                 <p className="text-[12px] font-bold">
                   Rs. {pricing.day.price} / day
                 </p>
@@ -137,7 +139,7 @@ const TranportCard = (props) => {
               </div>
             )}
           </div>
-          <h4 className="text-xs text-gray-500 mt-2 capitalize">
+          <h4 className="text-xs text-gray-500 capitalize">
             {make} | {model} | {capacity} seater
           </h4>
         </div>

@@ -5,7 +5,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useGetTransportsMutation } from "@/redux/services/transportService";
-import HotelCard from "@/components/transports/TransportCard";
+import TransportCard from "@/components/transports/TransportCard";
 
 import Filters from "@/components/transports/Filters";
 
@@ -105,7 +105,7 @@ const page = () => {
                 <div className="grid grid-cols-12 gap-2">
                   {transports.map((transport) => (
                     <div className="grid col-span-12 md:col-span-6 xl:col-span-4">
-                      <HotelCard transport={transport} />
+                      <TransportCard transport={transport} />
                     </div>
                   ))}
 

@@ -105,3 +105,22 @@ export const transports = [
   { label: "Van", value: "Van" },
   { label: "HiAce", value: "HiAce" },
 ];
+
+export const statuses = [
+  {
+    label: "Available",
+    value: "Available",
+  },
+  {
+    label: "Rented",
+    value: "Rented",
+  },
+  {
+    label: "In Maintenance",
+    value: "In Maintenance",
+  },
+  {
+    label: "Out of Service",
+    value: "Out of Service",
+  },
+];

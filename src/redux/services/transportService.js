@@ -21,6 +21,13 @@ export const transportService = createApi({
         body: body,
       }),
     }),
+    updateStatus: builder.mutation({
+      query: (body) => ({
+        url: `/transport/status`,
+        method: "PATCH",
+        body: body,
+      }),
+    }),
     getTransports: builder.mutation({
       query: (body) => ({
         url: `/transport/all`,
@@ -41,12 +48,21 @@ export const transportService = createApi({
         body: body,
       }),
     }),
+    bookTransport: builder.mutation({
+      query: (body) => ({
+        url: `/transport/booking`,
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 });
 
 export const {
   usePostTransportMutation,
+  useUpdateStatusMutation,
   useGetTransportsMutation,
   useGetTransportQuery,
   useBookmarkTransportMutation,
+  useBookTransportMutation,
 } = transportService;

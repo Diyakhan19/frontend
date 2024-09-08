@@ -36,7 +36,7 @@ const page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (images.length < 5) return toast.error("Please select 5 images");
+    if (images.length !== 5) return toast.error("Please select 5 images");
 
     const formData = new FormData();
     formData.append("title", title);

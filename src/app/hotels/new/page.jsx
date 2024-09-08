@@ -1,22 +1,50 @@
 "use client";
 
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import Select from "@/components/common/Select";
 import toast from "react-hot-toast";
 import Loader from "@/components/common/Loader";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import {
   cities,
   facilities as facilitiesArr,
 } from "@/components/common/constants";
-import { useCreateHotelMutation } from "@/redux/services/hotelService";
+import {
+  useCreateHotelMutation,
+  useGetHotelQuery,
+} from "@/redux/services/hotelService";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = () => {
   const router = useRouter();
+  const params = useSearchParams();
+  const hotelId = params.get("hotelId");
   const [createHotel, { isLoading }] = useCreateHotelMutation();
+
+  const { data } = useGetHotelQuery(hotelId);
+  const hotel = data?.data;
+
+  useEffect(() => {
+    if (hotel) {
+      const { name, description, city, address, mapUrl, facilities, images } =
+        hotel;
+
+      setValues({
+        name,
+        description,
+        city,
+        address,
+        mapUrl,
+        facilities,
+        images: [],
+        oldImages: images,
+      });
+    }
+  }, [hotel]);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -30,6 +58,7 @@ const page = () => {
       category: "",
       facilities: [],
       images: [],
+      oldImages: [],
     },
     validationSchema: yup.object({
       name: yup.string().required("Name is required"),
@@ -40,12 +69,22 @@ const page = () => {
       facilities: yup.array().min(1, "Facilities is required"),
     }),
     onSubmit: async (values) => {
-      if (values?.images.length < 8) {
-        return toast.error("At least 8 images are required");
-      }
+      const {
+        name,
+        description,
+        city,
+        address,
+        mapUrl,
+        facilities,
+        images,
+        oldImages,
+      } = values;
 
-      const { name, description, city, address, mapUrl, facilities, images } =
-        values;
+      const totalImages = images.length + oldImages.length;
+
+      if (totalImages !== 8) {
+        return toast.error("Select 8 images");
+      }
 
       const formData = new FormData();
       formData.append("name", name);
@@ -54,6 +93,11 @@ const page = () => {
       formData.append("mapUrl", mapUrl);
       formData.append("city", city);
       formData.append("facilities", JSON.stringify(facilities));
+
+      if (hotelId) {
+        formData.append("hotelId", hotelId);
+        formData.append("oldImages", JSON.stringify(oldImages));
+      }
 
       if (images.length !== 0) {
         for (var i = 0; i < images.length; i++) {
@@ -64,7 +108,7 @@ const page = () => {
       try {
         const res = await createHotel(formData).unwrap();
         toast.success(res.message);
-        router.push(`/profile?userId=${user?.userId}`);
+        window.location.replace(`/profile?userId=${user?.userId}`);
       } catch (err) {
         console.log(err);
         toast.error(err?.data?.message);
@@ -75,8 +119,16 @@ const page = () => {
   const { values, errors, touched, handleChange, handleSubmit, setValues } =
     formik;
 
-  const { name, description, address, mapUrl, city, facilities, images } =
-    values;
+  const {
+    name,
+    description,
+    address,
+    mapUrl,
+    city,
+    facilities,
+    images,
+    oldImages,
+  } = values;
 
   const [facility, setFacility] = useState(null);
 
@@ -99,18 +151,46 @@ const page = () => {
     });
   };
 
-  const onRemoveImage = (indx) => {
-    const arr = [...images];
-    arr.splice(indx, 1);
-    setValues({
-      ...values,
-      images: arr,
-    });
+  const onRemoveImage = (key, path, indx) => {
+    const arr = [...values[key]];
+
+    if (key === "images") {
+      arr.splice(indx, 1);
+      return setValues({
+        ...values,
+        images: arr,
+      });
+    }
+
+    if (key === "oldImages") {
+      const index = arr.findIndex((item) => item === path);
+
+      if (index > -1) {
+        arr.splice(index, 1);
+        setValues({
+          ...values,
+          oldImages: arr,
+        });
+      }
+    }
   };
 
   let imgUrls = [];
   for (var i = 0; i < images.length; i++) {
-    imgUrls[i] = URL.createObjectURL(images[i]);
+    imgUrls[i] = {
+      key: "images",
+      url: URL.createObjectURL(images[i]),
+    };
+  }
+
+  if (hotelId) {
+    oldImages.forEach((img) => {
+      imgUrls.push({
+        key: "oldImages",
+        path: img,
+        url: `${BASE_URL}/${img}`,
+      });
+    });
   }
 
   const filteredFacilities = facilitiesArr.filter((item) =>
@@ -147,7 +227,7 @@ const page = () => {
             </div>
           </div>
           <div className="flex w-full flex-col justify-between sm:flex-row gap-2">
-            <div className="flex p-5 border shadow rounded-md flex-col w-full md:w-[50%] items-center justify-center gap-3">
+            <div className="flex p-5 border shadow rounded-md flex-col w-full md:w-[50%] items-center justify-start gap-3">
               <div className="w-full">
                 <label>Hotel Name</label>
                 <input
@@ -294,7 +374,7 @@ const page = () => {
               </div>
 
               <div className="w-full">
-                <label>Images</label>
+                <label>Images (8 Images)</label>
                 <div className="p-2 border rounded-lg items-center justify-center min-h-[100px] text-gray-500">
                   <input
                     type="file"
@@ -313,13 +393,15 @@ const page = () => {
                       {imgUrls.map((img, indx) => (
                         <div className="relative">
                           <img
-                            src={img}
+                            src={img.url}
                             className="w-[200px] h-[200px] rounded-lg"
                           />
 
                           <div
                             className="absolute cursor-pointer hover:scale-110 font-bold text-sm top-2 right-2 w-[20px] h-[20px] bg-white rounded-full flex items-center justify-center"
-                            onClick={() => onRemoveImage(indx)}
+                            onClick={() =>
+                              onRemoveImage(img.key, img.path, indx)
+                            }
                           >
                             X
                           </div>

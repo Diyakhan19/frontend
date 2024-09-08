@@ -55,6 +55,13 @@ export const transportService = createApi({
         body: body,
       }),
     }),
+    deleteTransport: builder.mutation({
+      query: (body) => ({
+        url: `/transport/delete`,
+        method: "DELETE",
+        body: body,
+      }),
+    }),
   }),
 });
 
@@ -65,4 +72,5 @@ export const {
   useGetTransportQuery,
   useBookmarkTransportMutation,
   useBookTransportMutation,
+  useDeleteTransportMutation,
 } = transportService;

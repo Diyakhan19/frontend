@@ -36,8 +36,16 @@ const page = () => {
 
   if (!post) return;
 
-  const { title, address, price, city, description, features, createdAt } =
-    post;
+  const {
+    userId,
+    title,
+    address,
+    price,
+    city,
+    description,
+    features,
+    createdAt,
+  } = post;
 
   const isFavorite = user.favorites.find((item) => item.postId === postId);
 
@@ -45,7 +53,12 @@ const page = () => {
     try {
       const res = await addRemoveFavPost({ postId }).unwrap();
       refetch();
-      dispatch(updateFavorites(res.data));
+      dispatch(
+        updateFavorites({
+          key: "post",
+          data: res.data,
+        })
+      );
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong");

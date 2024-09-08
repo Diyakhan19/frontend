@@ -6,10 +6,14 @@ import { useSignupMutation } from "@/redux/services/authService";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation"; // Corrected the import path
 import Link from "next/link";
+import { setCookie } from "cookies-next";
+import { setUser } from "@/redux/reducers/authSlice";
+import { useDispatch } from "react-redux";
 
 const Signup = () => {
   const [signup, { isLoading }] = useSignupMutation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -51,6 +55,9 @@ const Signup = () => {
       try {
         const res = await signup(formData).unwrap();
         toast.success(res.message);
+        setCookie("token", res.data.token);
+        dispatch(setUser(res.data.user));
+        router.push("/");
         router.push("/");
       } catch (error) {
         console.log(error);
@@ -149,8 +156,8 @@ const Signup = () => {
             >
               Role
             </div>
-            <div className="flex justify-between px-3 shadow py-2 rounded border">
-              {["user", "admin", "vendor"].map((roleOption) => (
+            <div className="flex items-center gap-20 px-3 shadow py-2 rounded border">
+              {["user", "vendor"].map((roleOption) => (
                 <label key={roleOption} className="block">
                   <input
                     type="radio"

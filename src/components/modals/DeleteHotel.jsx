@@ -7,15 +7,15 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { useDeletePostMutation } from "../../redux/services/postService";
 import { toast } from "react-hot-toast";
+import { useDeleteHotelMutation } from "@/redux/services/hotelService";
 
-export default function DeletePost(props) {
+export default function DeleteHotel(props) {
   const { modal, setModal } = props;
 
   const { isOpen, data } = modal;
 
-  const [deletePost] = useDeletePostMutation();
+  const [deleteHotel] = useDeleteHotelMutation();
 
   const onClose = () => {
     setModal({
@@ -26,14 +26,14 @@ export default function DeletePost(props) {
 
   const onYes = async () => {
     try {
-      const res = await deletePost({ postId: data.postId }).unwrap();
+      const res = await deleteHotel({ hotelId: data.hotelId }).unwrap();
       toast.success(res.message);
       onClose();
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } catch (err) {
-      toast.error("Error in deleting post");
+      toast.error("Error in deleting hotel");
     }
   };
 
@@ -62,11 +62,15 @@ export default function DeletePost(props) {
                   as="h3"
                   className="text-base font-semibold leading-6 text-gray-900"
                 >
-                  Delete Post
+                  Delete Hotel
                 </DialogTitle>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Are you sure you want to delete this post?
+                  <p className=" text-gray-500">
+                    Are you sure you want to delete this hotel?
+                  </p>
+                  <p className="text-red-500 text-sm mt-2">
+                    <b>Warning:</b> All data related to this hotel will be
+                    deleted. Including rooms, bookings, reviews, and other data.
                   </p>
                 </div>
               </div>

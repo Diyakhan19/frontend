@@ -178,7 +178,7 @@ const page = () => {
                     <img
                       src={`${BASE_URL}/${img}`}
                       alt="Destination Cover"
-                      className={`h-[250px] w-full object-cover cursor-pointer rounded-none ${
+                      className={`h-[250px] 2xl:h-[400px] w-full object-cover cursor-pointer rounded-none ${
                         indx === 1
                           ? "lg:rounded-b-lg"
                           : indx === 2

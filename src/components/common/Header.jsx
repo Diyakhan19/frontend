@@ -22,9 +22,14 @@ const Header = () => {
 
   const [user, setUser] = useState({});
   const [isLogin, setIsLogin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setUser(authUser);
+    if (authUser) {
+      setUser(authUser);
+      const admin = authUser?.roles?.includes("admin");
+      if (admin) setIsAdmin(true);
+    }
   }, [authUser]);
 
   useEffect(() => {
@@ -65,33 +70,42 @@ const Header = () => {
           ))}
           <div className="hidden lg:flex lg:flex-1 justify-center items-center ml-10">
             {isLogin ? (
-              <a
-                href={`/profile?userId=${user?.userId}`}
-                className="group block flex-shrink-0"
-              >
-                <div className="flex justify-center items-center">
-                  <div className="mr-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate">
-                      {user?.name}
-                    </p>
-                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                      View profile
-                    </p>
+              isAdmin ? (
+                <a
+                  href={"/admin/destinations"}
+                  className="text-sm font-semibold min-w-[100px] flex items-center justify-center leading-6 bg-primary text-white shadow rounded-full border px-3 py-1 hover:bg-gray-500 hover:text-white"
+                >
+                  Dashboard
+                </a>
+              ) : (
+                <a
+                  href={`/profile?userId=${user?.userId}`}
+                  className="group block flex-shrink-0"
+                >
+                  <div className="flex justify-center items-center">
+                    <div className="mr-3">
+                      <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 truncate">
+                        {user?.name}
+                      </p>
+                      <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
+                        View profile
+                      </p>
+                    </div>
+                    <div>
+                      <img
+                        alt=""
+                        src={
+                          user?.image
+                            ? `${BASE_URL}/${user?.image}`
+                            : "/images/female.png"
+                        }
+                        onError={(e) => (e.target.src = "/images/female.png")}
+                        className="inline-block h-9 w-9 rounded-full object-cover"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <img
-                      alt=""
-                      src={
-                        user?.image
-                          ? `${BASE_URL}/${user?.image}`
-                          : "/images/female.png"
-                      }
-                      onError={(e) => (e.target.src = "/images/female.png")}
-                      className="inline-block h-9 w-9 rounded-full object-cover"
-                    />
-                  </div>
-                </div>
-              </a>
+                </a>
+              )
             ) : (
               <a
                 className="-mx-3 flex gap-1 items-center justify-center rounded-full px-3 py-2 text-base border shadow font-semibold leading-7 text-gray-900 hover:bg-gray-300"

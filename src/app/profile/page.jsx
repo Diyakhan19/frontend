@@ -1,7 +1,7 @@
 "use client";
 import { useGetUserByIdQuery } from "../../redux/services/userService";
-import { useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import Posts from "@/components/posts/Posts";
 import { use, useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import TransportCard from "@/components/transports/TransportCard";
 import { deleteCookie } from "cookies-next";
 import moment from "moment";
 import { useGetTransportsMutation } from "@/redux/services/transportService";
+import { resetAuth } from "@/redux/reducers/authSlice";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -30,7 +31,10 @@ const Arrow = () => (
 );
 
 const page = () => {
+  const router = useRouter();
   const params = useSearchParams();
+  const dispatch = useDispatch();
+
   const userId = params.get("userId");
   const tabSelected = params.get("tab");
 
@@ -39,6 +43,7 @@ const page = () => {
   );
 
   const [transports, setTrasports] = useState([]);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { data } = useGetUserByIdQuery(userId);
   const [getTransports] = useGetTransportsMutation();
@@ -81,12 +86,25 @@ const page = () => {
   const onClickLogout = () => {
     deleteCookie("token");
     localStorage.clear();
+    dispatch(resetAuth());
+  };
+
+  const onClickLink = (type) => {
+    if (user.status === "approved") {
+      if (type === "hotel") router.push("/hotels/new");
+      else if (type === "transport") router.push("/transports/new");
+    } else {
+      setShowWarning(true);
+      setTimeout(() => {
+        setShowWarning(false);
+      }, 10000);
+    }
   };
 
   return (
     <>
       <main className="bg-gray-100 bg-opacity-25">
-        <div className="lg:w-10/12 lg:mx-auto mb-8">
+        <div className="lg:w-10/12 lg:mx-auto mb-8 mx-2">
           {isAuthenticated && isMe && (
             <div className="my-3 w-full shadow border rounded-lg px-3 py-2">
               <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between h-full w-full">
@@ -101,22 +119,21 @@ const page = () => {
 
                   {user?.roles?.includes("vendor") && (
                     <>
-                      <a
-                        href="/hotels/new"
+                      <div
                         className="cursor-pointer mx-1 gap-2 items-center justify-between rounded-full px-3 py-1 border shadow text-gray-600 flex hover:bg-gray-200"
+                        onClick={() => onClickLink("hotel")}
                       >
-                        <p> Post a hotel</p>
-
+                        <p>Post a hotel</p>
                         <Arrow />
-                      </a>
+                      </div>
 
-                      <a
-                        href="/transports/new"
+                      <div
                         className="cursor-pointer mx-1 gap-2 items-center justify-between rounded-full px-3 py-1 border shadow text-gray-600 flex hover:bg-gray-200"
+                        onClick={() => onClickLink("transport")}
                       >
                         <p>Post a transport</p>
                         <Arrow />
-                      </a>
+                      </div>
                     </>
                   )}
                 </div>
@@ -130,6 +147,13 @@ const page = () => {
                   <Arrow />
                 </a>
               </div>
+            </div>
+          )}
+
+          {showWarning && (
+            <div className="bg-red-200 rounded shadow border border-red-300 flex items-center p-2 text-red-500">
+              You can not perform this action. Your account is not approved.
+              Please contact Admin to get your account approved.
             </div>
           )}
 
@@ -467,35 +491,33 @@ const page = () => {
                 )
               ) : (
                 <div>
-                  {user?.favorites?.length !== 0 && (
-                    <div>
-                      <h1 className="my-2 font-bold ">
-                        Favorite Destinations: {favDestinations.length}
-                      </h1>
-                      <div className="grid grid-cols-12 gap-2">
-                        {favDestinations.map((item) => (
-                          <Card data={item} />
-                        ))}
-                      </div>
-
-                      <hr className="my-4" />
-
-                      <h1 className="my-2 font-bold ">Favorite Posts</h1>
-                      <Posts posts={favPosts} />
-
-                      <hr className="my-4" />
-                      <h1 className="my-2 font-bold ">
-                        Bookmarked Transports: {transports.length}
-                      </h1>
-                      <div className="grid grid-cols-12 gap-2">
-                        {transports.map((transport) => (
-                          <div className="grid col-span-12 md:col-span-6 xl:col-span-4">
-                            <TransportCard transport={transport} />
-                          </div>
-                        ))}
-                      </div>
+                  <div>
+                    <h1 className="my-2 font-bold ">
+                      Favorite Destinations: {favDestinations.length}
+                    </h1>
+                    <div className="grid grid-cols-12 gap-2">
+                      {favDestinations.map((item) => (
+                        <Card data={item} />
+                      ))}
                     </div>
-                  )}
+
+                    <hr className="my-4" />
+
+                    <h1 className="my-2 font-bold ">Favorite Posts</h1>
+                    <Posts posts={favPosts} />
+
+                    <hr className="my-4" />
+                    <h1 className="my-2 font-bold ">
+                      Bookmarked Transports: {transports.length}
+                    </h1>
+                    <div className="grid grid-cols-12 gap-2">
+                      {transports.map((transport) => (
+                        <div className="grid col-span-12 md:col-span-6 xl:col-span-4">
+                          <TransportCard transport={transport} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

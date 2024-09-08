@@ -9,15 +9,15 @@ import {
 } from "@headlessui/react";
 import {
   Bars3Icon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
   HomeIcon,
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
+import { resetAuth } from "@/redux/reducers/authSlice";
+import { useDispatch } from "react-redux";
 
 const navigation = [
   {
@@ -33,13 +33,20 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pathname, setPathname] = useState("");
 
   useEffect(() => {
-    // This code runs only on the client side
     setPathname(window.location.pathname);
   }, []);
+
+  const onClickLogout = () => {
+    deleteCookie("token");
+    localStorage.clear();
+    dispatch(resetAuth());
+  };
 
   return (
     <>
@@ -76,7 +83,12 @@ export default function Example() {
               </TransitionChild>
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
-                  <img alt="logo" src="/logo.png" className="h-8 w-auto" />
+                  <img
+                    alt="logo"
+                    src="/logo.png"
+                    className="h-8 w-auto cursor-pointer"
+                    onClick={() => router.push("/home")}
+                  />
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -113,7 +125,12 @@ export default function Example() {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
             <div className="flex h-16 shrink-0 items-center">
-              <img alt="logo" src="/logo.png" className="h-8 w-auto" />
+              <img
+                alt="logo"
+                src="/logo.png"
+                className="h-8 w-auto cursor-pointer"
+                onClick={() => router.push("/home")}
+              />
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -140,6 +157,33 @@ export default function Example() {
                     ))}
                   </ul>
                 </li>
+
+                <hr className="my-1" />
+
+                <Link
+                  href="/home"
+                  className={classNames(
+                    "text-gray-400 hover:bg-gray-800 hover:text-white cursor-pointer -mx-2",
+                    "group flex gap-x-3 rounded-md text-sm p-2 font-semibold leading-6"
+                  )}
+                  onClick={onClickLogout}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
+                    />
+                  </svg>
+                  Logout
+                </Link>
               </ul>
             </nav>
           </div>

@@ -61,18 +61,21 @@ const Destination = () => {
             <hr className="my-5" />
 
             {destinations.length !== 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4">
                 {destinations.map((item) => (
                   <div
                     key={item.id}
-                    className="border rounded-lg p-4 shadow-lg"
+                    className="border rounded-lg p-3 shadow-lg"
                   >
                     <Image
                       src={`${BASE_URL}/${item.images[0]}`}
                       alt="Destination Image"
                       width={100}
                       height={100}
-                      className="rounded-lg w-full"
+                      className="rounded-lg w-full h-[150px] xl:h-[200px] cursor-pointer"
+                      onClick={() =>
+                        router.push(`/destinations/${item.destinationId}`)
+                      }
                     />
                     <h2 className="text-lg font-bold mt-2">{item.title}</h2>
                     <p className="text-sm text-gray-500">

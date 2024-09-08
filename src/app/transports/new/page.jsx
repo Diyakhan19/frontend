@@ -5,14 +5,58 @@ import * as yup from "yup";
 import Select from "@/components/common/Select";
 import toast from "react-hot-toast";
 import Loader from "@/components/common/Loader";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { cities, transports } from "@/components/common/constants";
-import { usePostTransportMutation } from "@/redux/services/transportService";
+import {
+  useGetTransportQuery,
+  usePostTransportMutation,
+} from "@/redux/services/transportService";
+import { useEffect } from "react";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = () => {
   const router = useRouter();
+  const params = useSearchParams();
+  const transportId = params.get("transportId");
+
   const [postTransport, { isLoading }] = usePostTransportMutation();
+
+  const { data } = useGetTransportQuery(transportId);
+
+  const transport = data?.data;
+
+  useEffect(() => {
+    if (transport) {
+      const {
+        title,
+        description,
+        make,
+        model,
+        type,
+        pricing,
+        phone,
+        city,
+        capacity,
+        images,
+      } = transport;
+
+      setValues({
+        title,
+        description,
+        make,
+        model,
+        type,
+        pricing,
+        phone,
+        city,
+        capacity,
+        images: [],
+        oldImages: images,
+      });
+    }
+  }, [transport]);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -41,6 +85,7 @@ const page = () => {
       phone: "",
       city: "",
       images: [],
+      oldImages: [],
     },
     validationSchema: yup.object({
       title: yup.string().required("Title is required"),
@@ -59,10 +104,6 @@ const page = () => {
       capacity: yup.string().required("Capacity is required"),
     }),
     onSubmit: async (values) => {
-      if (values.images.length < 1) {
-        return toast.error("At least 1 image is required");
-      }
-
       const {
         title,
         description,
@@ -74,7 +115,14 @@ const page = () => {
         city,
         capacity,
         images,
+        oldImages,
       } = values;
+
+      const totalImgs = images.length + oldImages.length;
+
+      if (totalImgs !== 5) {
+        return toast.error("Please select 5 images");
+      }
 
       const formData = new FormData();
       formData.append("title", title);
@@ -87,6 +135,11 @@ const page = () => {
       formData.append("city", city);
       formData.append("capacity", capacity);
 
+      if (transportId) {
+        formData.append("transportId", transportId);
+        formData.append("oldImages", JSON.stringify(oldImages));
+      }
+
       if (images.length !== 0) {
         for (var i = 0; i < images.length; i++) {
           formData.append("images", images[i]);
@@ -96,7 +149,7 @@ const page = () => {
       try {
         const res = await postTransport(formData).unwrap();
         toast.success(res.message);
-        router.push(`/profile?userId=${user?.userId}`);
+        window.location.replace(`/profile?userId=${user?.userId}`);
       } catch (err) {
         console.log(err);
         toast.error(err?.data?.message);
@@ -118,6 +171,7 @@ const page = () => {
     phone,
     capacity,
     images,
+    oldImages,
   } = values;
 
   const onChangePrice = (e) => {
@@ -146,18 +200,46 @@ const page = () => {
     });
   };
 
-  const onRemoveImage = (indx) => {
-    const arr = [...images];
-    arr.splice(indx, 1);
-    setValues({
-      ...values,
-      images: arr,
-    });
+  const onRemoveImage = (key, path, indx) => {
+    const arr = [...values[key]];
+
+    if (key === "images") {
+      arr.splice(indx, 1);
+      return setValues({
+        ...values,
+        images: arr,
+      });
+    }
+
+    if (key === "oldImages") {
+      const index = arr.findIndex((item) => item === path);
+
+      if (index > -1) {
+        arr.splice(index, 1);
+        setValues({
+          ...values,
+          oldImages: arr,
+        });
+      }
+    }
   };
 
   let imgUrls = [];
   for (var i = 0; i < images.length; i++) {
-    imgUrls[i] = URL.createObjectURL(images[i]);
+    imgUrls[i] = {
+      key: "images",
+      url: URL.createObjectURL(images[i]),
+    };
+  }
+
+  if (transportId) {
+    oldImages.forEach((img) => {
+      imgUrls.push({
+        key: "oldImages",
+        path: img,
+        url: `${BASE_URL}/${img}`,
+      });
+    });
   }
 
   return (
@@ -190,7 +272,7 @@ const page = () => {
             </div>
           </div>
           <div className="flex w-full flex-col justify-between sm:flex-row gap-2">
-            <div className="flex p-5 border shadow rounded-md flex-col w-full md:w-[50%] items-center justify-center gap-3">
+            <div className="flex p-5 border shadow rounded-md flex-col w-full md:w-[50%] items-center justify-start gap-3">
               <div className="w-full">
                 <label>Title</label>
                 <input
@@ -413,7 +495,7 @@ const page = () => {
               </div>
 
               <div className="w-full">
-                <label>Images</label>
+                <label>Images (5 Images)</label>
                 <div className="p-2 border rounded-lg items-center justify-center min-h-[100px] text-gray-500">
                   <input
                     type="file"
@@ -432,13 +514,15 @@ const page = () => {
                       {imgUrls.map((img, indx) => (
                         <div className="relative">
                           <img
-                            src={img}
+                            src={img.url}
                             className="w-[200px] h-[200px] rounded-lg"
                           />
 
                           <div
                             className="absolute cursor-pointer hover:scale-110 font-bold text-sm top-2 right-2 w-[20px] h-[20px] bg-white rounded-full flex items-center justify-center"
-                            onClick={() => onRemoveImage(indx)}
+                            onClick={() =>
+                              onRemoveImage(img.key, img.path, indx)
+                            }
                           >
                             X
                           </div>

@@ -7,15 +7,15 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { useDeletePostMutation } from "../../redux/services/postService";
 import { toast } from "react-hot-toast";
+import { useDeleteTransportMutation } from "@/redux/services/transportService";
 
-export default function DeletePost(props) {
+export default function DeleteTransport(props) {
   const { modal, setModal } = props;
 
   const { isOpen, data } = modal;
 
-  const [deletePost] = useDeletePostMutation();
+  const [deleteTrasport] = useDeleteTransportMutation();
 
   const onClose = () => {
     setModal({
@@ -26,14 +26,16 @@ export default function DeletePost(props) {
 
   const onYes = async () => {
     try {
-      const res = await deletePost({ postId: data.postId }).unwrap();
+      const res = await deleteTrasport({
+        transportId: data.transportId,
+      }).unwrap();
       toast.success(res.message);
       onClose();
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } catch (err) {
-      toast.error("Error in deleting post");
+      toast.error("Error in deleting transport");
     }
   };
 
@@ -62,11 +64,11 @@ export default function DeletePost(props) {
                   as="h3"
                   className="text-base font-semibold leading-6 text-gray-900"
                 >
-                  Delete Post
+                  Delete Transport
                 </DialogTitle>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    Are you sure you want to delete this post?
+                    Are you sure you want to delete this transport?
                   </p>
                 </div>
               </div>

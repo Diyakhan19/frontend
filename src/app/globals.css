@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type="text"] {
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"] {
   border-radius: 6px;
   border: 1px solid rgb(197, 194, 194);
   padding: 8px 12px;

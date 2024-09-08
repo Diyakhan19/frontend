@@ -1,19 +1,58 @@
 "use client";
 
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import Select from "@/components/common/Select";
 import toast from "react-hot-toast";
-import { useCreatePostMutation } from "@/redux/services/postService";
+import {
+  useCreatePostMutation,
+  useGetPostQuery,
+} from "@/redux/services/postService";
 import Loader from "@/components/common/Loader";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { cities, categories } from "@/components/common/constants";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const page = () => {
   const router = useRouter();
+  const params = useSearchParams();
+  const postId = params.get("postId");
+
   const [createPost, { isLoading }] = useCreatePostMutation();
+
+  const { data } = useGetPostQuery(postId);
+
+  const post = data?.data;
+
+  useEffect(() => {
+    if (post) {
+      const {
+        title,
+        description,
+        city,
+        category,
+        address,
+        price,
+        features,
+        images,
+      } = post;
+
+      setValues({
+        title,
+        description,
+        address,
+        city,
+        price,
+        category,
+        features,
+        oldImages: images,
+        images: [],
+      });
+    }
+  }, [post]);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -27,6 +66,7 @@ const page = () => {
       category: "",
       features: [],
       images: [],
+      oldImages: [],
     },
     validationSchema: yup.object({
       title: yup.string().required("Title is required"),
@@ -47,9 +87,14 @@ const page = () => {
         price,
         features,
         images,
+        oldImages,
       } = values;
 
+      const totalImgs = images.length + oldImages.length;
+      if (totalImgs !== 5) return toast.error("5 Images are required");
+
       const formData = new FormData();
+
       formData.append("title", title);
       formData.append("description", description);
       formData.append("address", address);
@@ -57,6 +102,11 @@ const page = () => {
       formData.append("city", city);
       formData.append("category", category);
       formData.append("features", JSON.stringify(features));
+
+      if (postId) {
+        formData.append("postId", postId);
+        formData.append("oldImages", JSON.stringify(oldImages));
+      }
 
       if (images.length !== 0) {
         for (var i = 0; i < images.length; i++) {
@@ -67,7 +117,7 @@ const page = () => {
       try {
         const res = await createPost(formData).unwrap();
         toast.success(res.message);
-        router.push(`/profile?userId=${user?.userId}`);
+        window.location.replace(`/profile?userId=${user?.userId}`);
       } catch (err) {
         console.log(err);
         toast.error(err?.data?.message);
@@ -87,6 +137,7 @@ const page = () => {
     city,
     features,
     images,
+    oldImages,
   } = values;
 
   const [feature, setFeature] = useState("");
@@ -112,18 +163,47 @@ const page = () => {
     });
   };
 
-  const onRemoveImage = (indx) => {
-    const arr = [...images];
-    arr.splice(indx, 1);
-    setValues({
-      ...values,
-      images: arr,
-    });
+  const onRemoveImage = (key, path, indx) => {
+    const arr = [...values[key]];
+
+    if (key === "images") {
+      arr.splice(indx, 1);
+      return setValues({
+        ...values,
+        images: arr,
+      });
+    }
+
+    if (key === "oldImages") {
+      const index = arr.findIndex((item) => item === path);
+
+      if (index > -1) {
+        arr.splice(index, 1);
+        setValues({
+          ...values,
+          oldImages: arr,
+        });
+      }
+    }
   };
 
   let imgUrls = [];
   for (var i = 0; i < images.length; i++) {
-    imgUrls[i] = URL.createObjectURL(images[i]);
+    const img = images[i];
+    imgUrls[i] = {
+      key: "images",
+      url: URL.createObjectURL(img),
+    };
+  }
+
+  if (postId) {
+    oldImages.forEach((img) => {
+      imgUrls.push({
+        key: "oldImages",
+        path: img,
+        url: `${BASE_URL}/${img}`,
+      });
+    });
   }
 
   return (
@@ -292,7 +372,7 @@ const page = () => {
                           viewBox="0 0 24 24"
                           strokeWidth="1.5"
                           stroke="currentColor"
-                          class="size-6"
+                          className="size-6"
                           onClick={() => onRemoveFeature(indx)}
                         >
                           <path
@@ -308,12 +388,12 @@ const page = () => {
               </div>
 
               <div className="w-full">
-                <label>Images</label>
+                <label>Images (5 images)</label>
                 <div className="p-2 border rounded-lg items-center justify-center min-h-[100px] text-gray-500">
                   <input
                     type="file"
                     multiple
-                    className="w-full"
+                    className="w-full object-cover"
                     id="images"
                     name="images"
                     onChange={(e) =>
@@ -327,13 +407,15 @@ const page = () => {
                       {imgUrls.map((img, indx) => (
                         <div className="relative">
                           <img
-                            src={img}
+                            src={img.url}
                             className="w-[200px] h-[200px] rounded-lg"
                           />
 
                           <div
                             className="absolute cursor-pointer hover:scale-110 font-bold text-sm top-2 right-2 w-[20px] h-[20px] bg-white rounded-full flex items-center justify-center"
-                            onClick={() => onRemoveImage(indx)}
+                            onClick={() =>
+                              onRemoveImage(img.key, img.path, indx)
+                            }
                           >
                             X
                           </div>

@@ -19,6 +19,10 @@ const authSlice = createSlice({
     isAuthenticated: token ? true : false,
   },
   reducers: {
+    resetAuth: (state, action) => {
+      state.user = {};
+      state.isAuthenticated = false;
+    },
     setUser: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = true;
@@ -97,6 +101,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  resetAuth,
   setUser,
   removeUser,
   updateFavorites,

@@ -48,6 +48,13 @@ export const hotelService = createApi({
         body: body,
       }),
     }),
+    deleteHotel: builder.mutation({
+      query: (body) => ({
+        url: `/hotel/delete`,
+        method: "DELETE",
+        body: body,
+      }),
+    }),
   }),
 });
 
@@ -57,4 +64,5 @@ export const {
   useGetHotelsMutation,
   useGetHotelQuery,
   useBookingMutation,
+  useDeleteHotelMutation,
 } = hotelService;

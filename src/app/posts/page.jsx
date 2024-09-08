@@ -13,63 +13,18 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { useGetPostsMutation } from "../../redux/services/postService";
 import Posts from "@/components/posts/Posts";
-import Select from "@/components/common/Select";
-import { cities, categories } from "@/components/common/constants";
 import { useSearchParams } from "next/navigation";
-
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White" },
-      { value: "beige", label: "Beige" },
-      { value: "blue", label: "Blue" },
-      { value: "brown", label: "Brown" },
-      { value: "green", label: "Green" },
-      { value: "purple", label: "Purple" },
-    ],
-  },
-  {
-    id: "category",
-    name: "Category",
-    options: [
-      { value: "new-arrivals", label: "All New Arrivals" },
-      { value: "tees", label: "Tees" },
-      { value: "crewnecks", label: "Crewnecks" },
-      { value: "sweatshirts", label: "Sweatshirts" },
-      { value: "pants-shorts", label: "Pants & Shorts" },
-    ],
-  },
-  {
-    id: "sizes",
-    name: "Sizes",
-    options: [
-      { value: "xs", label: "XS" },
-      { value: "s", label: "S" },
-      { value: "m", label: "M" },
-      { value: "l", label: "L" },
-      { value: "xl", label: "XL" },
-      { value: "2xl", label: "2XL" },
-    ],
-  },
-];
+import Filters from "@/components/posts/Filters";
 
 const page = () => {
-  const params = useSearchParams();
-  const val = params.get("category");
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-
   const [getAllPosts, { isLoading }] = useGetPostsMutation();
 
   const [posts, setPosts] = useState([]);
-  const [search, setSearch] = useState("");
-  const [city, setCity] = useState("");
-  const [category, setCategory] = useState(val || "");
+  const [sidebar, setSidebar] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      getAllPosts({ search, city, category })
+      getAllPosts({ search: "" })
         .unwrap()
         .then((res) => {
           setPosts(res.data);
@@ -78,91 +33,14 @@ const page = () => {
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [search, city, category]);
-
-  const clearFilters = () => {
-    setSearch("");
-    setCategory("");
-    setCity("");
-    setMobileFiltersOpen(false);
-  };
-
-  const Filters = () => {
-    return (
-      <div>
-        <form className="space-y-5 divide-y divide-gray-200">
-          <div>
-            <fieldset>
-              <legend className="block text-sm font-medium text-gray-900">
-                Search
-              </legend>
-              <div className="space-y-3 pt-3">
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search here..."
-                  className="w-full"
-                />
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="pt-5">
-            <fieldset>
-              <legend className="block text-sm font-medium text-gray-900">
-                Category
-              </legend>
-              <div className="space-y-3 pt-3">
-                <Select
-                  values={categories}
-                  label={category}
-                  onChange={(val) => {
-                    setCategory(val);
-                    setMobileFiltersOpen(false);
-                  }}
-                />
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="pt-5">
-            <fieldset>
-              <legend className="block text-sm font-medium text-gray-900">
-                City
-              </legend>
-              <div className="space-y-3 pt-3">
-                <Select
-                  values={cities}
-                  label={city}
-                  onChange={(val) => {
-                    setCity(val);
-                    setMobileFiltersOpen(false);
-                  }}
-                />
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="pt-5">
-            <div
-              className="px-3 py-2 cursor-pointer flex items-center justify-center bg-primary text-white rounded-lg"
-              onClick={clearFilters}
-            >
-              Clear Filters
-            </div>
-          </div>
-        </form>
-      </div>
-    );
-  };
+  }, []);
 
   return (
     <div className="bg-white">
       <div>
         <Dialog
-          open={mobileFiltersOpen}
-          onClose={setMobileFiltersOpen}
+          open={sidebar}
+          onClose={setSidebar}
           className="relative z-40 lg:hidden"
         >
           <DialogBackdrop
@@ -179,7 +57,7 @@ const page = () => {
                 <h2 className="text-lg font-medium text-gray-900">Filters</h2>
                 <button
                   type="button"
-                  onClick={() => setMobileFiltersOpen(false)}
+                  onClick={() => setSitebar(false)}
                   className="-mr-2 flex h-10 w-10 items-center justify-center p-2 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Close menu</span>
@@ -188,7 +66,7 @@ const page = () => {
               </div>
 
               <form className="mt-4 px-3">
-                <Filters />
+                <Filters setPosts={setPosts} setSidebar={setSidebar} />
               </form>
             </DialogPanel>
           </div>
@@ -211,7 +89,7 @@ const page = () => {
 
               <button
                 type="button"
-                onClick={() => setMobileFiltersOpen(true)}
+                onClick={() => setSitebar(true)}
                 className="inline-flex items-center lg:hidden"
               >
                 <span className="text-sm font-medium text-gray-700">
@@ -224,7 +102,7 @@ const page = () => {
               </button>
 
               <div className="hidden lg:block">
-                <Filters />
+                <Filters setPosts={setPosts} setSidebar={setSidebar} />
               </div>
 
               <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3 overflow-auto">

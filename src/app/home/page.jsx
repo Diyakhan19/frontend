@@ -134,6 +134,30 @@ const page = () => {
           referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
+
+      <div className="px-5 lg:px-20 bg-yellow-50 justify-between w-full h-auto mt-10 py-10 flex flex-col lg:flex-row gap-10">
+        <div className="w-full">
+          <h1 className="text-3xl font-bold text-gray-700">About</h1>
+          <p className="text-gray-500 my-5 text-lg">
+            Explore Kashmir is a web-based platform to showcase the beauty and
+            opportunities within Kashmir, Pakistan. The website features
+            multiple modules including destinations, hotels, transports, and
+            marketplace, allowing users to explore tourist attractions, book
+            accommodations, and find transportation options. Additional
+            functionalities such as a chat system for user interaction and a
+            profile module for personalized experiences are integrated to
+            enhance user engagement and provide a seamless browsing and booking
+            experience for visitors.
+          </p>
+        </div>
+
+        <div className="w-full flex items-center justify-center">
+          <img
+            src={"/logo.png"}
+            className="w-[400px] h-auto rounded-lg p-5 bg-white border"
+          />
+        </div>
+      </div>
     </div>
   );
 };

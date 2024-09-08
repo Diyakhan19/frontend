@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import destination from "@/assets/images/destination.png";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -127,6 +127,21 @@ const page = () => {
     }
   };
 
+  const map = destination?.mapUrl.replace("600", "100%");
+
+  const memoizedMap = useMemo(() => {
+    return destination?.mapUrl ? (
+      <div
+        className="google-map-code rounded-lg"
+        dangerouslySetInnerHTML={{ __html: map }}
+      />
+    ) : (
+      <div className="h-[200px] flex items-center justify-center">
+        No map information to show
+      </div>
+    );
+  }, [destination?.mapUrl, map]);
+
   if (!destination) return;
 
   const {
@@ -140,8 +155,6 @@ const page = () => {
     likes,
     mapUrl,
   } = destination;
-
-  const map = mapUrl.replace("600", "100%");
 
   const isReviewed = reviews.find((item) => item.userId === user.userId);
 
@@ -269,16 +282,7 @@ const page = () => {
           <div className="p-5 shadow border rounded-lg my-4">
             <h1 className="text-gray-800 font-bold text-2xl mb-3">Location:</h1>
 
-            {mapUrl ? (
-              <div
-                className="google-map-code rounded-lg"
-                dangerouslySetInnerHTML={{ __html: map }}
-              />
-            ) : (
-              <div className="h-[200px] flex items-center justify-center">
-                No map information to show
-              </div>
-            )}
+            {memoizedMap}
           </div>
         </div>
 

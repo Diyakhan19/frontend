@@ -4,12 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import Posts from "@/components/posts/Posts";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Card from "@/components/destinations/Card";
 import HotelCard from "@/components/hotels/HotelCard";
 import TransportCard from "@/components/transports/TransportCard";
 import { deleteCookie } from "cookies-next";
 import moment from "moment";
+import { useGetTransportsMutation } from "@/redux/services/transportService";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -37,9 +38,13 @@ const page = () => {
     (state) => state.auth
   );
 
+  const [transports, setTrasports] = useState([]);
+
   const { data } = useGetUserByIdQuery(userId);
+  const [getTransports] = useGetTransportsMutation();
 
   const [tab, setTab] = useState("posts");
+  const user = data?.data;
 
   useEffect(() => {
     if (tabSelected) {
@@ -47,7 +52,16 @@ const page = () => {
     }
   }, [tabSelected]);
 
-  const user = data?.data;
+  useEffect(() => {
+    if (user) {
+      const trasportIds = user.bookmarks;
+      getTransports({ search: "", trasportIds: trasportIds })
+        .then((res) => {
+          setTrasports(res.data.data);
+        })
+        .catch((err) => {});
+    }
+  }, [user]);
 
   if (!user) return;
 
@@ -376,28 +390,40 @@ const page = () => {
                       Hotel Bookings: {bookings.length}
                     </h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-                      {bookings.map((item) => (
-                        <div className="space-y-1 border border-borderCol shadow rounded-lg p-3 text-sm truncate">
-                          <Link
-                            href={`/hotels/${item.room.hotel.hotelId}`}
-                            className="flex px-2 py-2 border rounded bg-gray-500 text-white hover:bg-gray-700"
-                          >
-                            <span className="font-semibold mr-1">Hotel:</span>
-                            {item.room.hotel.name}
-                          </Link>
-                          <div className="flex px-2 py-1 border rounded bg-gray-500 text-white">
-                            <span className="font-semibold mr-1">Room:</span>
-                            {item.room.name}
+                      {bookings.map((item) => {
+                        const { hotel } = item.room;
+                        return (
+                          <div className="border border-borderCol shadow rounded-lg text-sm truncate">
+                            <Link
+                              href={`/hotels/${item.room.hotel.hotelId}`}
+                              className="flex flex-col bg-gray-200"
+                            >
+                              <img
+                                src={`${BASE_URL}/${hotel.images[0]}`}
+                                className="rounded-t-lg h-full w-full min-h-[150px] max-h-[150px] object-cover"
+                              />
+                              <div className="p-2">
+                                <span className="font-semibold mr-1">
+                                  Hotel:
+                                </span>
+                                {hotel.name}
+                              </div>
+                            </Link>
+                            <div className="flex w-full px-2 py-1 mt-[1px] bg-gray-200">
+                              <span className="font-semibold mr-1">Room:</span>
+                              {item.room.name}
+                            </div>
+                            <div className="my-1 p-2">
+                              <b>Checkin:</b>{" "}
+                              {moment(item.checkin).format("DD-MM-YYYY")} <br />
+                              <b>Checkout:</b>{" "}
+                              {moment(item.checkout).format("DD-MM-YYYY")}{" "}
+                              <br />
+                              <b>Guests:</b> {item.guests} <br />
+                            </div>
                           </div>
-                          <div className="my-1">
-                            <b>Checkin:</b>{" "}
-                            {moment(item.checkin).format("DD-MM-YYYY")} <br />
-                            <b>Checkout:</b>{" "}
-                            {moment(item.checkout).format("DD-MM-YYYY")} <br />
-                            <b>Guests:</b> {item.guests} <br />
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <hr className="my-4" />
@@ -407,19 +433,28 @@ const page = () => {
                     </h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                       {rentals.map((item) => (
-                        <div className="space-y-1 border border-borderCol shadow rounded-lg p-3 text-sm truncate">
+                        <div className="border border-borderCol shadow rounded-lg text-sm truncate">
                           <Link
                             href={`/transports/${item.transportId}`}
-                            className="flex px-2 py-2 border rounded bg-gray-500 text-white hover:bg-gray-700"
+                            className="flex flex-col bg-gray-200"
                           >
-                            <span className="font-semibold mr-1">Vehicle:</span>
-                            {item.transport.title}
+                            <img
+                              src={`${BASE_URL}/${item.transport.images[0]}`}
+                              className="rounded-t-lg h-full w-full min-h-[150px] max-h-[150px] object-cover"
+                            />
+                            <div className="p-2">
+                              <span className="font-semibold mr-1">
+                                Vehicle:
+                              </span>
+                              {item.transport.title}
+                            </div>
                           </Link>
-                          <div className="flex px-2 py-1 border rounded bg-gray-500 text-white">
+
+                          <div className="flex mt-[1px] px-2 py-1 bg-gray-200">
                             <span className="font-semibold mr-1">Type:</span>
                             {item.transport.type}
                           </div>
-                          <div className="my-1">
+                          <div className="my-1 p-2">
                             <b>Plan:</b> Per {item.pricePlan} <br />
                             <b>Rented On:</b>{" "}
                             {moment(item.createdAt).format("DD-MM-YYYY")} <br />
@@ -430,8 +465,6 @@ const page = () => {
                     </div>
                   </div>
                 )
-              ) : user?.favorites.length === 0 ? (
-                "No favorites found"
               ) : (
                 <div>
                   {user?.favorites?.length !== 0 && (
@@ -449,6 +482,18 @@ const page = () => {
 
                       <h1 className="my-2 font-bold ">Favorite Posts</h1>
                       <Posts posts={favPosts} />
+
+                      <hr className="my-4" />
+                      <h1 className="my-2 font-bold ">
+                        Bookmarked Transports: {transports.length}
+                      </h1>
+                      <div className="grid grid-cols-12 gap-2">
+                        {transports.map((transport) => (
+                          <div className="grid col-span-12 md:col-span-6 xl:col-span-4">
+                            <TransportCard transport={transport} />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

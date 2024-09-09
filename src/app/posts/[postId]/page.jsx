@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   useAddRemoveFavPostMutation,
   useGetPostQuery,
@@ -16,6 +16,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const page = () => {
   const params = useParams();
   const postId = +params?.postId;
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const { data, refetch } = useGetPostQuery(postId);
@@ -48,6 +49,7 @@ const page = () => {
   } = post;
 
   const isFavorite = user.favorites.find((item) => item.postId === postId);
+  const isOwner = user?.userId === userId;
 
   const onClickFavIcon = async () => {
     try {
@@ -63,6 +65,10 @@ const page = () => {
       console.log(err);
       toast.error("Something went wrong");
     }
+  };
+
+  const onClickChat = () => {
+    router.push(`/chat?receiverId=${userId}&postId=${postId}`);
   };
 
   return (
@@ -94,25 +100,28 @@ const page = () => {
           <div className="md:flex-1 px-4 border shadow rounded-lg p-5 w-full sm:w-[50%]">
             <div className="flex justify-between">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
-              <button
-                type="button"
-                className="inline-flex items-center gap-x-1.5 rounded-full border-[2px] shadow px-4 hover:border-primary"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-6"
+              {!isOwner && (
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-x-1.5 rounded-full border-[2px] shadow px-4 hover:border-primary"
+                  onClick={onClickChat}
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2.25c-2.429 0-4.817.178-7.152.521C2.87 3.061 1.5 4.795 1.5 6.741v6.018c0 1.946 1.37 3.68 3.348 3.97.877.129 1.761.234 2.652.316V21a.75.75 0 0 0 1.28.53l4.184-4.183a.39.39 0 0 1 .266-.112c2.006-.05 3.982-.22 5.922-.506 1.978-.29 3.348-2.023 3.348-3.97V6.741c0-1.947-1.37-3.68-3.348-3.97A49.145 49.145 0 0 0 12 2.25ZM8.25 8.625a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm2.625 1.125a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-2.429 0-4.817.178-7.152.521C2.87 3.061 1.5 4.795 1.5 6.741v6.018c0 1.946 1.37 3.68 3.348 3.97.877.129 1.761.234 2.652.316V21a.75.75 0 0 0 1.28.53l4.184-4.183a.39.39 0 0 1 .266-.112c2.006-.05 3.982-.22 5.922-.506 1.978-.29 3.348-2.023 3.348-3.97V6.741c0-1.947-1.37-3.68-3.348-3.97A49.145 49.145 0 0 0 12 2.25ZM8.25 8.625a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm2.625 1.125a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
 
-                <span className="text-gray-600 font-bold text-sm">Chat</span>
-              </button>
+                  <span className="text-gray-600 font-bold text-sm">Chat</span>
+                </button>
+              )}
             </div>
             <p className="text-gray-600 text-sm mb-4">{address}</p>
             <div className="flex mb-2">

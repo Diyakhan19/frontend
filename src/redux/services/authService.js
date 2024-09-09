@@ -24,6 +24,3 @@ export const authService = createApi({
 });
 
 export const { useLoginMutation, useSignupMutation } = authService;
-
-// builer.query used for GET
-// builder.mutation used for rest of them

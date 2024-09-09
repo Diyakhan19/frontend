@@ -89,7 +89,7 @@ const page = () => {
 
               <button
                 type="button"
-                onClick={() => setSitebar(true)}
+                onClick={() => setSidebar(true)}
                 className="inline-flex items-center lg:hidden"
               >
                 <span className="text-sm font-medium text-gray-700">

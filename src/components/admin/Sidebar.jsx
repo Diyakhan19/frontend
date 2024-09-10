@@ -39,7 +39,9 @@ export default function Example() {
   const [pathname, setPathname] = useState("");
 
   useEffect(() => {
-    setPathname(window.location.pathname);
+    if (typeof window !== "undefined") {
+      setPathname(window.location.pathname);
+    }
   }, []);
 
   const onClickLogout = () => {
@@ -174,7 +176,7 @@ export default function Example() {
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
                     stroke="currentColor"
-                    class="size-6"
+                    className="size-6"
                   >
                     <path
                       strokeLinecap="round"

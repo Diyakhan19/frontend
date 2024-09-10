@@ -14,7 +14,7 @@ function SampleNextArrow(props) {
         viewBox="0 0 24 24"
         strokeWidth="1.5"
         stroke="currentColor"
-        class="size-8"
+        className="size-8"
         onClick={onClick}
       >
         <path
@@ -38,7 +38,7 @@ function SamplePrevArrow(props) {
         viewBox="0 0 24 24"
         strokeWidth="1.5"
         stroke="currentColor"
-        class="size-8"
+        className="size-8"
         onClick={onClick}
       >
         <path

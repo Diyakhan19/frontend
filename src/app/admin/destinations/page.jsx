@@ -51,7 +51,7 @@ const Destination = () => {
                 </select>
                 <button
                   className="bg-gray-800 hover:bg-gray-600 text-white text-sm font-bold px-4"
-                  onClick={() => router.push("/admin/destinations/new")}
+                  onClick={() => router.push("/admin/destinations/add")}
                 >
                   + Add New Destination
                 </button>
@@ -61,7 +61,7 @@ const Destination = () => {
             <hr className="my-5" />
 
             {destinations.length !== 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
                 {destinations.map((item) => (
                   <div
                     key={item.id}

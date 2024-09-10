@@ -5,8 +5,9 @@ export const middleware = (req) => {
   const token = req.cookies.get("token")?.value;
   const path = req.nextUrl.pathname;
 
-  if (!token && path.includes("new")) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (!token) {
+    if (path.includes("new") || path.includes("chat"))
+      return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (token) {

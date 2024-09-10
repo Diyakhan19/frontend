@@ -53,8 +53,8 @@ const authSlice = createSlice({
         let indx = -1;
         indx =
           key === "post"
-            ? favorites.findIndex((item) => item.postId === data.postId)
-            : favorites.findIndex(
+            ? favorites?.findIndex((item) => item.postId === data.postId)
+            : favorites?.findIndex(
                 (item) => item.destinationId === data.destinationId
               );
 

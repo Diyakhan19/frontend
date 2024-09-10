@@ -3,9 +3,9 @@ import { useGetUserByIdQuery } from "../../redux/services/userService";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import Posts from "@/components/posts/Posts";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "@/components/destinations/Card";
+import PostCard from "@/components/posts/Card";
 import HotelCard from "@/components/hotels/HotelCard";
 import TransportCard from "@/components/transports/TransportCard";
 import { deleteCookie } from "cookies-next";
@@ -19,7 +19,7 @@ const Arrow = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
-    class="size-4"
+    className="size-4"
     fill="currentColor"
   >
     <path
@@ -224,6 +224,12 @@ const page = () => {
                     </span>
                     Hotels
                   </li>
+                  <li>
+                    <span className="font-semibold mr-1">
+                      {user?.transports?.length}
+                    </span>
+                    Tranports
+                  </li>
                 </ul>
                 <div className="hidden md:block">
                   <h1 className="font-semibold">{user?.email}</h1>
@@ -239,16 +245,22 @@ const page = () => {
           <div className="px-px md:px-3">
             <ul className="flex md:hidden justify-around space-x-8 border-t text-center p-2 text-gray-600 leading-snug text-sm">
               <li>
-                <span className="font-semibold text-gray-800 block">136</span>
-                posts
+                <span className="font-semibold text-gray-800 block">
+                  {user?.posts?.length}
+                </span>
+                Posts
               </li>
               <li>
-                <span className="font-semibold text-gray-800 block">40.5k</span>
-                followers
+                <span className="font-semibold text-gray-800 block">
+                  {user?.hotels?.length}
+                </span>
+                Hotels
               </li>
               <li>
-                <span className="font-semibold text-gray-800 block">302</span>
-                following
+                <span className="font-semibold text-gray-800 block">
+                  {user?.transports?.length}
+                </span>
+                Transports
               </li>
             </ul>
 
@@ -267,7 +279,7 @@ const page = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="size-6"
+                    className="size-6"
                   >
                     <path
                       fill-rule="evenodd"
@@ -292,7 +304,7 @@ const page = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path d="M19.006 3.705a.75.75 0 1 0-.512-1.41L6 6.838V3a.75.75 0 0 0-.75-.75h-1.5A.75.75 0 0 0 3 3v4.93l-1.006.365a.75.75 0 0 0 .512 1.41l16.5-6Z" />
                         <path
@@ -316,7 +328,7 @@ const page = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path d="M3.375 4.5C2.339 4.5 1.5 5.34 1.5 6.375V13.5h12V6.375c0-1.036-.84-1.875-1.875-1.875h-8.25ZM13.5 15h-12v2.625c0 1.035.84 1.875 1.875 1.875h.375a3 3 0 1 1 6 0h3a.75.75 0 0 0 .75-.75V15Z" />
                         <path d="M8.25 19.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0ZM15.75 6.75a.75.75 0 0 0-.75.75v11.25c0 .087.015.17.042.248a3 3 0 0 1 5.958.464c.853-.175 1.522-.935 1.464-1.883a18.659 18.659 0 0 0-3.732-10.104 1.837 1.837 0 0 0-1.47-.725H15.75Z" />
@@ -342,7 +354,7 @@ const page = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                       </svg>
@@ -362,7 +374,7 @@ const page = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        class="size-6"
+                        className="size-6"
                       >
                         <path d="M15 3.75H9v16.5h6V3.75ZM16.5 20.25h3.375c1.035 0 1.875-.84 1.875-1.875V5.625c0-1.036-.84-1.875-1.875-1.875H16.5v16.5ZM4.125 3.75H7.5v16.5H4.125a1.875 1.875 0 0 1-1.875-1.875V5.625c0-1.036.84-1.875 1.875-1.875Z" />
                       </svg>
@@ -381,7 +393,13 @@ const page = () => {
                 user?.posts.length === 0 ? (
                   "No posts found"
                 ) : (
-                  <Posts posts={user?.posts} />
+                  <div className="grid grid-cols-12 gap-2">
+                    {user.posts.map((post) => (
+                      <div className="grid col-span-12 md:col-span-4 lg:col-span-3">
+                        <PostCard post={post} />
+                      </div>
+                    ))}
+                  </div>
                 )
               ) : tab === "hotels" ? (
                 user?.hotels.length === 0 ? (
@@ -503,8 +521,16 @@ const page = () => {
 
                     <hr className="my-4" />
 
-                    <h1 className="my-2 font-bold ">Favorite Posts</h1>
-                    <Posts posts={favPosts} />
+                    <h1 className="my-2 font-bold ">
+                      Favorite Posts: {favPosts.length}
+                    </h1>
+                    <div className="grid grid-cols-12 gap-2">
+                      {favPosts.map((post) => (
+                        <div className="grid col-span-12 md:col-span-4 lg:col-span-3">
+                          <PostCard post={post} />
+                        </div>
+                      ))}
+                    </div>
 
                     <hr className="my-4" />
                     <h1 className="my-2 font-bold ">

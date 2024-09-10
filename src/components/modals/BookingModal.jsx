@@ -10,10 +10,8 @@ import { useSelector } from "react-redux";
 
 export default function BookingModal(props) {
   const route = useRouter();
-  const { modal, setModal, refetch } = props;
+  const { modal, setModal } = props;
   const { isOpen, data } = modal;
-
-  console.log(data);
 
   const { user } = useSelector((state) => state.auth);
 

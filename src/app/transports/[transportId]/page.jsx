@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 import { statuses } from "@/components/common/constants";
 import Select from "@/components/common/Select";
 import toast from "react-hot-toast";
+import StarRatings from "react-star-ratings";
+import moment from "moment";
+import { useSaveReviewMutation } from "@/redux/services/destService";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -26,19 +29,26 @@ const page = () => {
   });
 
   const [status, setStatus] = useState("");
+  const [rating, setRating] = useState({
+    stars: 0,
+    review: "",
+  });
 
   const { isAuthenticated, user: currentUser } = useSelector(
     (state) => state.auth
   );
 
-  const { data } = useGetTransportQuery(transportId);
+  const { data, refetch } = useGetTransportQuery(transportId);
   const transport = data?.data;
-  const [updateStatus, { isLoading }] = useUpdateStatusMutation();
+  const [updateStatus] = useUpdateStatusMutation();
+  const [addReview] = useSaveReviewMutation();
 
   useEffect(() => {
     if (transport) {
       setStatus(transport.status);
     }
+
+    window.scrollTo(0, 0);
   }, [transport]);
 
   if (!transport) return;
@@ -54,6 +64,8 @@ const page = () => {
     description,
     images,
     user,
+    reviews,
+    bookings,
   } = transport;
 
   const onClickSelect = (key) => {
@@ -79,6 +91,30 @@ const page = () => {
   };
 
   const isMe = currentUser?.userId === user.userId;
+
+  const isReviewed = reviews.find((item) => item.userId === currentUser.userId);
+  const isBooked = bookings.find((item) => item.userId === currentUser.userId);
+
+  // Add a review
+  const saveReview = async () => {
+    if (!isAuthenticated) return router.push("/login");
+
+    try {
+      if (rating.review === "") return toast.error("Please write a review");
+
+      const res = await addReview({
+        transportId: transportId,
+        stars: rating.stars,
+        review: rating.review,
+      }).unwrap();
+
+      toast.success(res.message);
+      refetch();
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <div className="px-5 sm:px-20 mx-auto p-6 my-5">
@@ -145,7 +181,7 @@ const page = () => {
         </div>
       </div>
 
-      <div className="mt-6 p-5 border rounded-md">
+      <div className="mt-6 p-5 border rounded-lg border-gray-300">
         <div className="flex gap-2 flex-col sm:flex-row justify-between">
           <h2 className="text-2xl font-semibold">{title}</h2>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -154,7 +190,7 @@ const page = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="size-5"
+                className="size-5"
               >
                 <path
                   fillRule="evenodd"
@@ -170,7 +206,7 @@ const page = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="size-5"
+                className="size-5"
               >
                 <path
                   fillRule="evenodd"
@@ -212,13 +248,13 @@ const page = () => {
         </div>
       </div>
 
-      <div className="mt-6 p-5 border rounded-md">
+      <div className="mt-6 p-5 border rounded-lg border-gray-300">
         <h2 className="text-2xl font-semibold mb-2">Description</h2>
         <hr className="my-4" />
         <p className="text-gray-700 leading-relaxed">{description}</p>
       </div>
 
-      <div className="mt-6 p-5 border rounded-md">
+      <div className="mt-6 p-5 border rounded-lg border-gray-300">
         <h2 className="text-2xl font-semibold mb-2">Details</h2>
         <hr className="my-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -227,7 +263,7 @@ const page = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="size-6"
+              className="size-6"
             >
               <path
                 fillRule="evenodd"
@@ -243,7 +279,7 @@ const page = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="size-7"
+              className="size-7"
             >
               <path d="M3.375 4.5C2.339 4.5 1.5 5.34 1.5 6.375V13.5h12V6.375c0-1.036-.84-1.875-1.875-1.875h-8.25ZM13.5 15h-12v2.625c0 1.035.84 1.875 1.875 1.875h.375a3 3 0 1 1 6 0h3a.75.75 0 0 0 .75-.75V15Z" />
               <path d="M8.25 19.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0ZM15.75 6.75a.75.75 0 0 0-.75.75v11.25c0 .087.015.17.042.248a3 3 0 0 1 5.958.464c.853-.175 1.522-.935 1.464-1.883a18.659 18.659 0 0 0-3.732-10.104 1.837 1.837 0 0 0-1.47-.725H15.75Z" />
@@ -257,7 +293,7 @@ const page = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="size-6"
+              className="size-6"
             >
               <path
                 fillRule="evenodd"
@@ -279,7 +315,7 @@ const page = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="size-6"
+              className="size-6"
             >
               <path
                 fillRule="evenodd"
@@ -292,8 +328,8 @@ const page = () => {
         </div>
       </div>
 
-      <div className="mt-6 p-5 border rounded-md">
-        <h2 className="text-3xl font-semibold text-gray-700 mb-2">Pricing</h2>
+      <div className="mt-6 p-5 border rounded-lg border-gray-300">
+        <h2 className="text-2xl font-semibold mb-2">Pricing</h2>
         <div clas></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {Object.entries(transport.pricing).map(([key, value]) => (
@@ -305,7 +341,7 @@ const page = () => {
                 <h3 className="text-xl font-medium text-gray-800 capitalize mb-2">
                   Per {key}
                 </h3>
-                {!isMe && (
+                {!isMe && transport.status !== "rented" && (
                   <button
                     className="bg-gray-500 text-white px-3"
                     onClick={() => onClickSelect(key)}
@@ -323,6 +359,92 @@ const page = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {isBooked && !isReviewed && (
+        <div className="flex gap-3 justify-between flex-col md:flex-row my-5">
+          <h1 className="text-gray-800 text-md mb-3">
+            Looks like you have booked this transport and haven't reviewd.
+            Please leave a review.
+          </h1>
+          <div className="flex flex-col border rounded-lg p-5 min-w-[50%]">
+            <div className="flex justify-between">
+              <p className="font-bold my-2 text-gray-800">Leave a review:</p>
+              <button
+                className="bg-primary px-4 py-1 text-white"
+                onClick={saveReview}
+              >
+                Save
+              </button>
+            </div>
+            <div className="flex items-center gap-2 justify-start">
+              <p className="text-gray-700 text-md font-semibold mt-[3px]">
+                Rating:
+              </p>
+              <div>
+                <StarRatings
+                  rating={rating.stars}
+                  starRatedColor="#ffa534"
+                  starHoverColor="#ffa534"
+                  changeRating={(stars) =>
+                    setRating({ ...rating, stars: stars })
+                  }
+                  numberOfStars={5}
+                  name="rating"
+                  starDimension="30px"
+                  starSpacing="2px"
+                />
+              </div>
+            </div>
+            <textarea
+              className="flex w-full border-borderCol my-2"
+              rows={4}
+              value={rating.review}
+              onChange={(e) => setRating({ ...rating, review: e.target.value })}
+            ></textarea>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6 p-5 border rounded-lg border-gray-300">
+        <h2 className="text-2xl font-semibold mb-2">Reviews</h2>
+
+        {reviews.length === 0 ? (
+          <div className="h-[200px] flex items-center justify-center">
+            No reviews available
+          </div>
+        ) : (
+          reviews.map((review) => (
+            <div className="flex space-x-4 text-sm text-gray-500">
+              <div className="flex-none py-10">
+                <img
+                  alt=""
+                  src={`${BASE_URL}/${review.user.image}`}
+                  className="h-10 w-10 rounded-full bg-gray-100 object-cover"
+                  onError={(e) => (e.target.src = "/images/female.png")}
+                />
+              </div>
+              <div className="flex-1 py-5 border-b border-gray-200">
+                <h3 className="font-medium text-gray-900">
+                  {review.user.name}
+                </h3>
+                <p>{moment(review.createdAt).format("MMMM DD, YYYY")}</p>
+                <div className="mt-2 flex items-center">
+                  <StarRatings
+                    rating={review.stars}
+                    starRatedColor="#ffa534"
+                    numberOfStars={5}
+                    name="rating"
+                    starDimension="20px"
+                    starSpacing="2px"
+                  />
+                </div>
+
+                <p className="mt-3">{review.text}</p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

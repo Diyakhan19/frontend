@@ -23,7 +23,7 @@ const page = () => {
 
   const [createPost, { isLoading }] = useCreatePostMutation();
 
-  const { data } = useGetPostQuery(postId);
+  const { data } = useGetPostQuery(postId, { skip: !postId });
 
   const post = data?.data;
 

@@ -5,6 +5,7 @@ import { useGetDestinationsQuery } from "@/redux/services/adminService";
 import { useGetHotelsMutation } from "@/redux/services/hotelService";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useGetTransportsMutation } from "@/redux/services/transportService";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -25,6 +26,18 @@ const page = () => {
       .unwrap()
       .then((res) => {
         setHotels(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const [transports, setTransports] = useState([]);
+  const [getTrasports] = useGetTransportsMutation();
+
+  useEffect(() => {
+    getTrasports({ search: "", limit: 4, sortBy: "rating" })
+      .unwrap()
+      .then((res) => {
+        setTransports(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -156,6 +169,48 @@ const page = () => {
             src={"/logo.png"}
             className="w-[400px] h-auto rounded-lg p-5 bg-white border"
           />
+        </div>
+      </div>
+
+      <div className="px-5 lg:px-20 py-5">
+        <div className="px-1 mb-5">
+          <h1 className="text-gray-700 text-xl font-bold my-2">
+            High Rated Transport in The Area
+          </h1>
+          <p className="text-gray-500">
+            Explore highest-rated trasport, experienced and rated by visitors.
+          </p>
+          <hr className="my-2" />
+        </div>
+        <div className="mx-auto grid max-w-2xl auto-rows-fr grid-cols-2 gap-4 lg:mx-0 lg:max-w-none lg:grid-cols-4">
+          {transports.length !== 0 &&
+            transports.map((transport) => (
+              <div
+                key={transport.transportId}
+                className="cursor-pointer relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-20 sm:pt-48 lg:pt-40 xl:pt-[250px] hover:opacity-80"
+                onClick={() =>
+                  router.push(`/transports/${transport?.transportId}`)
+                }
+              >
+                <img
+                  alt=""
+                  src={`${BASE_URL}/${transport.images[0]}`}
+                  className="absolute inset-0 -z-10 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />
+                <div className="absolute inset-0 -z-10 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
+
+                <div className="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                  <div className="mr-8">{transport?.city}</div>
+                </div>
+                <h3 className="mt-3 text-lg font-semibold leading-6 text-white">
+                  <div>
+                    <span className="absolute inset-0" />
+                    {transport?.title}
+                  </div>
+                </h3>
+              </div>
+            ))}
         </div>
       </div>
     </div>

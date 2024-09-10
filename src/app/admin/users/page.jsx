@@ -60,76 +60,76 @@ const Destination = () => {
 
             <hr className="my-5" />
 
-            <div class="flow-root">
-              <div class="overflow-x-auto">
-                <div class="inline-block min-w-full py-2 overflow-auto align-middle sm:px-6 lg:px-8">
-                  <table class="min-w-full divide-y divide-gray-300 overflow-auto">
+            <div className="flow-root">
+              <div className="overflow-x-auto">
+                <div className="inline-block min-w-full py-2 overflow-auto align-middle sm:px-6 lg:px-8">
+                  <table className="min-w-full divide-y divide-gray-300 overflow-auto">
                     <thead>
                       <tr>
                         <th
                           scope="col"
-                          class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                          className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
                         >
                           Name
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Email
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Roles
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Status
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Posts
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Hotels
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Transports
                         </th>
                         <th
                           scope="col"
-                          class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
                           Action
                         </th>
                       </tr>
                     </thead>
-                    <tbody class="bg-white">
+                    <tbody className="bg-white">
                       {users.length !== 0 ? (
                         users.map((item) => (
-                          <tr class="even:bg-gray-50">
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+                          <tr className="even:bg-gray-50">
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
                               {item.name}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {item.email}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 capitalize">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 capitalize">
                               {item.roles.toString()}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 capitalize">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 capitalize">
                               <span
                                 className={`inline-flex items-center gap-x-1.5 rounded-full px-1.5 py-0.5 text-xs font-medium ${
                                   item.status === "approved"
@@ -155,16 +155,16 @@ const Destination = () => {
                                 {item.status}
                               </span>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {item._count.posts}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {item._count.hotels}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {item._count.transports}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               <button
                                 className="bg-primary py-1 h-[30px] px-3 rounded text-white"
                                 onClick={() =>
@@ -177,7 +177,7 @@ const Destination = () => {
                           </tr>
                         ))
                       ) : (
-                        <tr class="even:bg-gray-50">
+                        <tr className="even:bg-gray-50">
                           <td colSpan={7}>
                             <div className="flex items-center justify-center h-[400px] text-gray-500">
                               No users found

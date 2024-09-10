@@ -21,9 +21,16 @@ export const chatService = createApi({
         body: body,
       }),
     }),
-    getChats: builder.query({
+    deleteChat: builder.mutation({
       query: (body) => ({
-        url: "/chat",
+        url: "/chat/delete",
+        method: "DELETE",
+        body: body,
+      }),
+    }),
+    getChats: builder.query({
+      query: () => ({
+        url: `/chat`,
         method: "GET",
       }),
     }),
@@ -45,6 +52,7 @@ export const chatService = createApi({
 
 export const {
   useCreateChatMutation,
+  useDeleteChatMutation,
   useGetChatsQuery,
   useGetMessagesQuery,
   useSendMessageMutation,

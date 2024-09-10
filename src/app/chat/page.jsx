@@ -11,6 +11,7 @@ import {
   useSendMessageMutation,
 } from "@/redux/services/chatService";
 import { socket } from "../page";
+import DeleteChat from "@/components/modals/DeleteChat";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -24,12 +25,7 @@ const page = (props) => {
 
   const receiverId = params.get("receiverId");
   const postId = params.get("postId");
-
-  const [createChat] = useCreateChatMutation();
-  const [sendMessage] = useSendMessageMutation();
-
-  const { data: chatRes, refetch } = useGetChatsQuery();
-  const chats = chatRes?.data;
+  const hotelId = params.get("hotelId");
 
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState(null);
@@ -37,6 +33,16 @@ const page = (props) => {
     text: "",
     attachments: [],
   });
+  const [modal, setModal] = useState({
+    isOpen: false,
+    data: null,
+  });
+
+  const [createChat] = useCreateChatMutation();
+  const [sendMessage] = useSendMessageMutation();
+
+  const { data: chatRes, refetch } = useGetChatsQuery();
+  const chats = chatRes?.data;
 
   const { text, attachments } = message;
 
@@ -54,7 +60,7 @@ const page = (props) => {
   }, [chatMsgs]);
 
   // Receive real time message
-  socket.on("sendMessage", (data) => {
+  socket.on("receiveMessage", (data) => {
     if (Array.isArray(messages)) {
       setMessages([...messages, data]);
     }
@@ -63,7 +69,7 @@ const page = (props) => {
   // Create new chat or return existing one
   const chatHandler = async () => {
     try {
-      const body = { receiverId, postId };
+      const body = { receiverId, postId, hotelId };
       const { data: chat } = await createChat(body).unwrap();
       const { data: chats } = await refetch().unwrap();
       const foundChat = chats.find((item) => item.chatId === chat.chatId);
@@ -76,7 +82,7 @@ const page = (props) => {
   };
 
   useEffect(() => {
-    if (user && receiverId && postId) {
+    if (user && receiverId && (postId || hotelId)) {
       chatHandler();
     }
   }, []);
@@ -93,7 +99,7 @@ const page = (props) => {
   const onSend = (e) => {
     e.preventDefault();
 
-    if (text === "") return;
+    if (text === "" && attachments.length === 0) return;
 
     const { chatId, participants } = activeChat;
     const receiverId = participants[0].participant.userId;
@@ -112,7 +118,6 @@ const page = (props) => {
     sendMessage(body)
       .unwrap()
       .then((res) => {
-        console.log(res);
         setMessages([...messages, res.data]);
       })
       .catch((err) => {
@@ -127,10 +132,11 @@ const page = (props) => {
 
   return (
     <>
+      <DeleteChat modal={modal} setModal={setModal} />
       <div className="my-5 container mx-auto">
         <div className="flex relative items-center border shadow rounded-t-lg">
           {mobileView && activeChat && (
-            <div className="flex justify-between w-full lg:w-[75%]  items-center bg-bdark lg:bg-white lg:text-gray-500">
+            <div className="flex justify-between w-[13%] items-center bg-bdark lg:bg-white lg:text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -138,7 +144,10 @@ const page = (props) => {
                 strokeWidth="2.5"
                 stroke="black"
                 className="w-6 h-6 mx-4 lg:hidden cursor-pointer"
-                onClick={() => setMobileView(false)}
+                onClick={() => {
+                  setMobileView(false);
+                  setActiveChat(null);
+                }}
               >
                 <path
                   strokeLinecap="round"
@@ -146,27 +155,10 @@ const page = (props) => {
                   d="M15.75 19.5L8.25 12l7.5-7.5"
                 />
               </svg>
-              <div className="relative flex items-center w-full p-3 px-2 border-gray-300">
-                <img
-                  className="object-cover w-10 h-10 rounded-full"
-                  src={`${BASE_URL}/${activeChat.post.images[0]}`}
-                  alt="username"
-                  onError={() => {
-                    setImgSrc("/avatar.svg");
-                  }}
-                  onClick={() =>
-                    router.push(`/posts/${activeChat.post.postId}`)
-                  }
-                />
-                <div className="ml-4">
-                  <h5 className="block font-semibold">
-                    {activeChat.post.title}
-                  </h5>
-                </div>
-              </div>
             </div>
           )}
 
+          {/* 
           <div
             className={`${
               mobileView ? "hidden" : "flex"
@@ -177,8 +169,9 @@ const page = (props) => {
                 type="search"
                 className="block w-full placeholder:text-sm py-2 h-10 pl-10 border border-borderCol rounded-full outline-none"
                 name="search"
-                placeholder="Search by Name"
-                required
+                placeholder="Search by name"
+                value={keyword}
+                onChange={(e) => setKeword(e.target.value)}
               />
               <span className="absolute inset-y-0 left-1 flex items-center pl-2">
                 <svg
@@ -188,50 +181,69 @@ const page = (props) => {
                   strokeLinejoin="round"
                   strokeWidth="2"
                   viewBox="0 0 24 24"
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400 cursor-pointer"
+                  onClick={() => setKeword("")}
                 >
                   <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
               </span>
             </div>
+          </div> */}
+
+          <div className="hidden lg:flex items-center justify-center text-gray-500 w-full lg:w-[25%] p-3">
+            <h1 className="font-bold text-[16px]">CHATS</h1>
           </div>
 
-          <div className="hidden lg:flex justify-between w-full lg:w-[75%] items-center bg-bdark lg:bg-white lg:text-gray-500 text-white">
+          <div className="w-full lg:w-[75%] min-h-[65px] flex items-center lg:bg-white lg:text-gray-500 text-white">
             {activeChat && (
-              <div className="relative flex items-center w-full p-3 px-5 border-gray-300">
+              <div className="flex items-center w-full p-3 px-5 border-gray-300">
                 <img
                   className="object-cover cursor-pointer w-10 h-10 rounded-full"
-                  src={`${BASE_URL}/${activeChat.post.images[0]}`}
+                  src={`${BASE_URL}/${
+                    activeChat?.post?.images[0] || activeChat?.hotel?.images[0]
+                  }`}
                   alt="username"
-                  onClick={() =>
-                    router.push(`/posts/${activeChat.post.postId}`)
-                  }
+                  onClick={() => {
+                    if (activeChat?.post)
+                      router.push(`/posts/${activeChat.post.postId}`);
+                    else if (activeChat?.hotelId)
+                      router.push(`/hotels/${activeChat.hotel.hotelId}`);
+                  }}
                 />
                 <div className="ml-4">
                   <h5 className="block font-semibold text-[#646672]">
-                    {activeChat.post.title}
+                    {activeChat.post?.title || activeChat.hotel?.name}
                   </h5>
                 </div>
               </div>
             )}
-
-            {true && (
-              <button className="pr-4 hidden lg:block">
+            {activeChat && (
+              <div className="pr-4 text-gray-500 hover:text-red-500 cursor-pointer flex w-full justify-end">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
+                  fill="currentColor"
+                  className="size-6"
+                  onClick={() =>
+                    setModal({
+                      isOpen: true,
+                      data: activeChat,
+                    })
+                  }
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                    fillRule="evenodd"
+                    d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
+                    clipRule="evenodd"
                   />
                 </svg>
-              </button>
+              </div>
+            )}
+
+            {!activeChat && (
+              <div className="flex items-center justify-center text-[16px] font-bold w-full text-gray-500 lg:hidden">
+                Chats
+              </div>
             )}
           </div>
         </div>
@@ -239,14 +251,11 @@ const page = (props) => {
         <div className="flex relative h-[78vh] border shadow rounded-b-lg">
           <div className="flex flex-row scroll-hide  w-full overflow-x-hidden">
             <div
-              className={` ${
+              className={`${
                 mobileView ? "hidden" : "block"
               } flex flex-col lg:py-8 bg-white lg:px-6 w-full lg:w-[25%] lg:border-r-2 flex-shrink-0`}
             >
               <div className="flex flex-col gap-2 scroll-hide overflow-scroll h-full">
-                <div className="hidden lg:flex flex-row items-center justify-between text-xs">
-                  <h1 className="font-bold text-[16px] mb-2">CHATS</h1>
-                </div>
                 {chats?.length === 0 ? (
                   <div className="font-semibold mt-4 text-gray-500">
                     No chats found
@@ -258,7 +267,7 @@ const page = (props) => {
                     const participant = chat.participants[0].participant;
                     return (
                       <div
-                        className={`flex gap-1 m-2 lg:m-0 lg:gap-0 items-center flex-row scroll-hide rounded-lg border-b lg:border-b-0 px-3 py-4 cursor-pointer ${
+                        className={`flex gap-1 m-2 lg:m-0 lg:gap-0 items-center flex-row scroll-hide rounded-lg border-b px-3 py-4 cursor-pointer ${
                           activeChat?.chatId === chat.chatId
                             ? "text-white bg-primary"
                             : "text-[#868896]"
@@ -288,7 +297,7 @@ const page = (props) => {
 
                           <div className="flex justify-between">
                             <p className="self-start text-left text-[12px] font-medium truncate w-full">
-                              {chat.post.title}
+                              {chat?.post?.title || chat?.hotel?.name}
                             </p>
                             <p className="text-right text-[12px] font-medium px-3 lg:px-1 truncate w-full">
                               {moment(chat.createdAt).fromNow()}
@@ -318,9 +327,16 @@ const page = (props) => {
                     {activeChat &&
                       Array.isArray(messages) &&
                       messages.length !== 0 &&
-                      messages.map((message) => (
-                        <Message message={message} activeChat={activeChat} />
-                      ))}
+                      messages.map((message, indx) => {
+                        const prevMsg = messages[indx - 1];
+                        return (
+                          <Message
+                            message={message}
+                            activeChat={activeChat}
+                            prevMsg={prevMsg}
+                          />
+                        );
+                      })}
                     <div ref={chatRef} />
                   </div>
                 </div>
@@ -368,10 +384,10 @@ const page = (props) => {
                           />
 
                           {attachments.length !== 0 ? (
-                            <div className="text-xs md:text-sm flex gap-0.5">
+                            <div className="text-xs md:text-sm flex gap-0.5 px-2">
                               <p>{attachments.length} </p>
                               <span>
-                                {attachments.length === 1 ? " file" : " files"}
+                                {attachments.length === 1 ? " File" : " Files"}
                               </span>
                             </div>
                           ) : (
@@ -396,19 +412,16 @@ const page = (props) => {
                       <div>
                         <button
                           type="button"
-                          className="flex items-center justify-center text-sm bg-bdark rounded-lg text-white bg-primary px-3 lg:px-5 py-2 flex-shrink-0"
+                          className="flex items-center justify-center text-sm bg-bdark rounded-lg text-white bg-primary px-3 lg:px-7 py-2 flex-shrink-0"
                           onClick={onSend}
                         >
-                          <h6 className="hidden lg:block font-semibold">
-                            SEND
-                          </h6>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth="2"
                             stroke="currentColor"
-                            className="w-4 h-4 lg:hidden"
+                            className="w-4 h-4"
                           >
                             <path
                               strokeLinecap="round"

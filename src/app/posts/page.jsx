@@ -1,20 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid";
+import { PlusIcon } from "@heroicons/react/20/solid";
 import { useGetPostsMutation } from "../../redux/services/postService";
-import Posts from "@/components/posts/Posts";
-import { useSearchParams } from "next/navigation";
 import Filters from "@/components/posts/Filters";
+import Card from "@/components/posts/Card";
 
 const page = () => {
   const [getAllPosts, { isLoading }] = useGetPostsMutation();
@@ -106,7 +98,21 @@ const page = () => {
               </div>
 
               <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3 overflow-auto">
-                <Posts posts={posts} />
+                <div className="grid grid-cols-12 gap-2">
+                  {posts.map((post) => (
+                    <div className="grid col-span-12 md:col-span-4 lg:col-span-3">
+                      <Card post={post} />
+                    </div>
+                  ))}
+
+                  {posts.length === 0 && (
+                    <div className="col-span-12">
+                      <div className="flex items-center justify-center h-[300px]">
+                        No posts found
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@ import { hotelService } from "./services/hotelService";
 import { destService } from "./services/destService";
 import { chatService } from "./services/chatService";
 import { transportService } from "./services/transportService";
+import { campingService } from "./services/campingService";
 
 import authSlice from "./reducers/authSlice";
 
@@ -22,6 +23,7 @@ export const store = configureStore({
     [hotelService.reducerPath]: hotelService.reducer,
     [transportService.reducerPath]: transportService.reducer,
     [chatService.reducerPath]: chatService.reducer,
+    [campingService.reducerPath]: campingService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat(
@@ -32,7 +34,8 @@ export const store = configureStore({
       destService.middleware,
       hotelService.middleware,
       transportService.middleware,
-      chatService.middleware
+      chatService.middleware,
+      campingService.middleware
     ),
 });
 

@@ -148,12 +148,11 @@ const page = () => {
     destinationId,
     title,
     location,
-    district,
     description,
     images,
     reviews,
     likes,
-    mapUrl,
+    campings,
   } = destination;
 
   const isReviewed = reviews.find((item) => item.userId === user.userId);
@@ -215,7 +214,6 @@ const page = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="size-5"
                     className="h-[28px] w-[28px] mt-[1px] cursor-pointer"
                   >
                     <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
@@ -227,7 +225,6 @@ const page = () => {
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
                     stroke="currentColor"
-                    className="size-5"
                     className="h-[28px] w-[28px] mt-[1px] cursor-pointer"
                   >
                     <path
@@ -247,7 +244,6 @@ const page = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="#0068FF"
-                    className="size-5"
                     className="h-[28px] w-[28px] mt-[1px] cursor-pointer"
                   >
                     <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
@@ -259,7 +255,6 @@ const page = () => {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    className="size-5"
                     className="h-[28px] w-[28px] mt-[1px] cursor-pointer"
                   >
                     <path
@@ -286,7 +281,109 @@ const page = () => {
           </div>
         </div>
 
-        <div id="map">
+        <div id="pricing">
+          <div className="p-5 shadow border rounded-lg my-4">
+            <h1 className="text-gray-800 font-bold text-2xl mb-3">Camping</h1>
+
+            <div class="isolate overflow-hidden bg-gray-900 rounded-lg">
+              <div class="mx-auto max-w-7xl px-6 pb-96 pt-24 text-center sm:pt-32 lg:px-8">
+                <div class="mx-auto max-w-4xl">
+                  <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                    Looking for camping?
+                  </p>
+                </div>
+                <div class="relative mt-6">
+                  <p class="mx-auto max-w-2xl text-lg leading-8 text-white/60">
+                    These are some of best camping services provided by vendors
+                    at this destination to make your trip memorable.
+                  </p>
+                  <svg
+                    viewBox="0 0 1208 1024"
+                    class="absolute -top-10 left-1/2 -z-10 h-[64rem] -translate-x-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:-top-12 md:-top-20 lg:-top-12 xl:top-0"
+                  >
+                    <ellipse
+                      cx="604"
+                      cy="512"
+                      fill="url(#6d1bd035-0dd1-437e-93fa-59d316231eb0)"
+                      rx="604"
+                      ry="512"
+                    />
+                    <defs>
+                      <radialGradient id="6d1bd035-0dd1-437e-93fa-59d316231eb0">
+                        <stop stop-color="#7775D6" />
+                        <stop offset="1" stop-color="#E935C1" />
+                      </radialGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="flow-root bg-white pb-24 sm:pb-32">
+                <div class="-mt-80">
+                  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                    <div class="mx-auto grid items-center justify-center max-w-md grid-cols-1 gap-8 lg:max-w-6xl lg:grid-cols-3">
+                      {campings.length === 0 ? (
+                        <div className="bg-white rounded-xl p-5 col-span-12 h-[200px] border shadow flex items-center justify-center text-gray-800 text-xl">
+                          No campings at this destination yet.
+                        </div>
+                      ) : (
+                        campings.map((item) => {
+                          return (
+                            <div class="flex flex-col justify-between rounded-3xl bg-white p-8 shadow-xl ring-1 ring-gray-900/10 sm:p-10">
+                              <div>
+                                <div class="mt-4 flex items-baseline gap-x-2">
+                                  <span class="text-3xl font-bold tracking-tight text-gray-900">
+                                    {item.price} PKR
+                                  </span>
+                                  <span class="text-base font-semibold leading-7 text-gray-600">
+                                    / {item.duration}
+                                  </span>
+                                </div>
+                                <p class="mt-6 text-base leading-7 text-gray-600 truncate">
+                                  {item.type}
+                                </p>
+                                <ul
+                                  role="list"
+                                  class="mt-10 space-y-4 text-sm leading-6 text-gray-600"
+                                >
+                                  {item.facilities.slice(0, 4).map((feat) => (
+                                    <li class="flex gap-x-3">
+                                      <svg
+                                        class="h-6 w-5 flex-none text-indigo-600"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                      >
+                                        <path
+                                          fill-rule="evenodd"
+                                          d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                      {feat}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <a
+                                href={`/camping/${item.campingId}`}
+                                aria-describedby="tier-hobby"
+                                class="mt-8 block rounded-md bg-primary px-3.5 py-2 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              >
+                                See full details
+                              </a>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="reviews">
           <div className="p-5 shadow border rounded-lg my-4">
             <div className="flex gap-3 justify-between flex-col md:flex-row">
               <h1 className="text-gray-800 font-bold text-2xl mb-3">

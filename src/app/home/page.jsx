@@ -1,11 +1,13 @@
 "use client";
 import DestinationsCarousel from "@/components/common/DestinationsCarousel";
 import CategoriesCarousel from "@/components/common/CategoriesCarousel";
+import CampingCarousel from "@/components/common/CampingCarousel";
 import { useGetDestinationsQuery } from "@/redux/services/adminService";
 import { useGetHotelsMutation } from "@/redux/services/hotelService";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useGetTransportsMutation } from "@/redux/services/transportService";
+import campingImg from "@/assets/images/camping.jpg";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -169,6 +171,78 @@ const page = () => {
             src={"/logo.png"}
             className="w-[400px] h-auto rounded-lg p-5 bg-white border"
           />
+        </div>
+      </div>
+
+      <div className="px-5 lg:px-20 py-5">
+        <div className="px-1 my-5">
+          <h1 className="text-gray-700 text-xl font-bold my-2">
+            Discover Perfect Camping Experience
+          </h1>
+          <p className="text-gray-500">
+            Plan your next adventure with ease and explore scenic spots for an
+            unforgettable experience.
+          </p>
+          <hr className="my-2" />
+        </div>
+
+        <CampingCarousel />
+      </div>
+
+      <div className="px-5 lg:px-20 py-5">
+        <div class="mx-auto">
+          <div class="relative overflow-hidden bg-gray-900 px-6 py-20 shadow-xl rounded-2xl sm:px-10 sm:py-24 md:px-12 lg:px-20">
+            <img
+              class="absolute inset-0 h-full w-full object-cover brightness-150 saturate-0"
+              src={campingImg.src}
+              alt=""
+            />
+            <div class="absolute inset-0 bg-gray-900/90 mix-blend-multiply"></div>
+            <div
+              class="absolute -left-80 -top-56 transform-gpu blur-3xl"
+              aria-hidden="true"
+            >
+              <div class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-r from-[#ff4694] to-[#776fff] opacity-[0.45]"></div>
+            </div>
+            <div
+              class="hidden md:absolute md:bottom-16 md:left-[50rem] md:block md:transform-gpu md:blur-3xl"
+              aria-hidden="true"
+            >
+              <div class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-r from-[#ff4694] to-[#776fff] opacity-25"></div>
+            </div>
+            <div class="relative mx-auto max-w-2xl lg:mx-0">
+              <div className="flex gap-2 items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  class="size-8"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-white text-2xl mt-1 font-bold">
+                  Gratitude
+                </span>
+              </div>
+              <figure>
+                <blockquote class="mt-6 text-lg font-semibold text-white sm:text-xl sm:leading-8">
+                  <p>
+                    "The best way to see the kashmir online is through Explore
+                    Kashmir. It provides a wide range of diffrent things that
+                    will let you see the real kashmir."
+                  </p>
+                </blockquote>
+                <figcaption class="mt-6 text-base text-white">
+                  <div class="font-semibold">Madiha Khan</div>
+                  <div class="mt-1">Tourist & Explorer</div>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import Card from "@/components/destinations/Card";
 import PostCard from "@/components/posts/Card";
 import HotelCard from "@/components/hotels/HotelCard";
 import TransportCard from "@/components/transports/TransportCard";
+import CampingCard from "@/components/camping/CampingCard";
 import { deleteCookie } from "cookies-next";
 import moment from "moment";
 import { useGetTransportsMutation } from "@/redux/services/transportService";
@@ -91,8 +92,7 @@ const page = () => {
 
   const onClickLink = (type) => {
     if (user.status === "approved") {
-      if (type === "hotel") router.push("/hotels/new");
-      else if (type === "transport") router.push("/transports/new");
+      router.push(`/${type}/new`);
     } else {
       setShowWarning(true);
       setTimeout(() => {
@@ -121,7 +121,7 @@ const page = () => {
                     <>
                       <div
                         className="cursor-pointer mx-1 gap-2 items-center justify-between rounded-full px-3 py-1 border shadow text-gray-600 flex hover:bg-gray-200"
-                        onClick={() => onClickLink("hotel")}
+                        onClick={() => onClickLink("hotels")}
                       >
                         <p>Post a hotel</p>
                         <Arrow />
@@ -129,9 +129,17 @@ const page = () => {
 
                       <div
                         className="cursor-pointer mx-1 gap-2 items-center justify-between rounded-full px-3 py-1 border shadow text-gray-600 flex hover:bg-gray-200"
-                        onClick={() => onClickLink("transport")}
+                        onClick={() => onClickLink("transports")}
                       >
                         <p>Post a transport</p>
+                        <Arrow />
+                      </div>
+
+                      <div
+                        className="cursor-pointer mx-1 gap-2 items-center justify-between rounded-full px-3 py-1 border shadow text-gray-600 flex hover:bg-gray-200"
+                        onClick={() => onClickLink("camping")}
+                      >
+                        <p>Post a camping</p>
                         <Arrow />
                       </div>
                     </>
@@ -265,7 +273,7 @@ const page = () => {
             </ul>
 
             <ul
-              className="flex items-center justify-around md:justify-center space-x-4 lg:space-x-10  
+              className="flex items-center justify-around md:justify-center space-x-4 md:space-x-2 xl:space-x-10
               uppercase tracking-widest font-semibold text-xs text-gray-600 border-t"
             >
               <li
@@ -274,7 +282,7 @@ const page = () => {
                 }`}
                 onClick={() => setTab("posts")}
               >
-                <div className="p-3 flex items-center justify-center gap-2">
+                <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -299,7 +307,7 @@ const page = () => {
                     }`}
                     onClick={() => setTab("hotels")}
                   >
-                    <div className="p-3 flex items-center justify-center gap-2">
+                    <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -323,7 +331,7 @@ const page = () => {
                     }`}
                     onClick={() => setTab("trasports")}
                   >
-                    <div className="p-3 flex items-center justify-center gap-2">
+                    <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -338,6 +346,30 @@ const page = () => {
                       <span className="hidden md:inline">Transport</span>
                     </div>
                   </li>
+                  <li
+                    className={`cursor-pointer md:border-t ${
+                      tab === "camping" && "md:border-gray-700"
+                    }`}
+                    onClick={() => setTab("camping")}
+                  >
+                    <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M2.25 4.125c0-1.036.84-1.875 1.875-1.875h5.25c1.036 0 1.875.84 1.875 1.875V17.25a4.5 4.5 0 1 1-9 0V4.125Zm4.5 14.25a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z"
+                          clipRule="evenodd"
+                        />
+                        <path d="M10.719 21.75h9.156c1.036 0 1.875-.84 1.875-1.875v-5.25c0-1.036-.84-1.875-1.875-1.875h-.14l-8.742 8.743c-.09.089-.18.175-.274.257ZM12.738 17.625l6.474-6.474a1.875 1.875 0 0 0 0-2.651L15.5 4.787a1.875 1.875 0 0 0-2.651 0l-.1.099V17.25c0 .126-.003.251-.01.375Z" />
+                      </svg>
+
+                      <span className="hidden md:inline">Camping</span>
+                    </div>
+                  </li>
                 </>
               )}
 
@@ -349,7 +381,7 @@ const page = () => {
                     }`}
                     onClick={() => setTab("favorites")}
                   >
-                    <div className="p-3 flex items-center justify-center gap-2">
+                    <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -369,7 +401,7 @@ const page = () => {
                     }`}
                     onClick={() => setTab("bookings")}
                   >
-                    <div className="p-3 flex items-center justify-center gap-2">
+                    <div className="p-1 lg:p-3 flex items-center justify-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -505,6 +537,16 @@ const page = () => {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )
+              ) : tab === "camping" ? (
+                user?.camping?.length === 0 ? (
+                  "No camping services found"
+                ) : (
+                  <div className="grid grid-cols-12 gap-4">
+                    {user.camping.map((item) => (
+                      <CampingCard data={item} />
+                    ))}
                   </div>
                 )
               ) : (

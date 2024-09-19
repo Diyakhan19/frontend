@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Slider from "react-slick";
-import { categories } from "./constants";
+import { campings } from "./constants";
 import { useRouter } from "next/navigation";
 
 function SampleNextArrow(props) {
@@ -52,12 +52,12 @@ function SamplePrevArrow(props) {
   );
 }
 
-const CategoriesCarousel = () => {
+const CampingCarousel = () => {
   const settings = {
     infinite: true,
     speed: 500,
     dots: false,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 5000,
@@ -80,14 +80,14 @@ const CategoriesCarousel = () => {
   const router = useRouter();
 
   const onClickCategory = (category) => {
-    router.push(`/posts?category=${encodeURIComponent(category)}`);
+    router.push(`/camping?category=${encodeURIComponent(category)}`);
   };
 
   return (
     <>
       <div className="relative">
         <Slider {...settings}>
-          {categories.map((item, indx) => {
+          {campings.map((item, indx) => {
             return (
               <div>
                 <div
@@ -95,7 +95,7 @@ const CategoriesCarousel = () => {
                   onClick={() => onClickCategory(item.label)}
                 >
                   <img
-                    src={item.image}
+                    src={item.image.src}
                     alt="Card"
                     className="w-full h-[240px] object-cover"
                   />
@@ -113,4 +113,4 @@ const CategoriesCarousel = () => {
   );
 };
 
-export default CategoriesCarousel;
+export default CampingCarousel;

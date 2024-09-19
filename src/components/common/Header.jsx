@@ -10,6 +10,7 @@ const navigation = [
   { name: "Transport", href: "/transports" },
   { name: "Marketplace", href: "/posts" },
   { name: "Destinations", href: "/destinations" },
+  { name: "Camping", href: "/camping" },
 ];
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -62,7 +63,7 @@ const Header = () => {
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
         </div>
-        <div className="hidden lg:flex gap-4">
+        <div className="hidden lg:flex gap-2">
           {navigation.map((item) => (
             <a
               key={item.name}

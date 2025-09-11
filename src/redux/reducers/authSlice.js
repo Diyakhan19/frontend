@@ -1,3 +1,4 @@
+"use client";
 import { createSlice, current } from "@reduxjs/toolkit";
 import { getCookie, deleteCookie } from "cookies-next";
 

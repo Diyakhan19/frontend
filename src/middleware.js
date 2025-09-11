@@ -19,14 +19,14 @@ export const middleware = (req) => {
     }
 
     // If a no vendor user tries to access these pages, redirect to profile
-    const isVendor = decodedToken.roles.includes("vendor");
+    const isVendor = decodedToken?.roles?.includes("vendor");
     if (["/hotels/new", "/transports/new"].includes(path) && !isVendor) {
       return NextResponse.redirect(
         new URL(`/profile?userId=${decodedToken.userId}`, req.url)
       );
     }
 
-    const isAdmin = decodedToken.roles.includes("admin");
+    const isAdmin = decodedToken?.roles?.includes("admin");
 
     // If not admin, don't allow to access admin dashboard
     if (path.includes("admin") && !isAdmin) {

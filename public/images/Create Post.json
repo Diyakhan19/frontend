@@ -1,0 +1,355 @@
+{
+	"info": {
+		"_postman_id": "c0e9aebc-23c6-4679-8c05-ed5b9c4da8af",
+		"name": "Clubs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25761395",
+		"_collection_link": "https://warped-meadow-644197.postman.co/workspace/Learna~6523c1d6-d598-4199-a849-45dfce446218/collection/25761395-c0e9aebc-23c6-4679-8c05-ed5b9c4da8af?action=share&source=collection_link&creator=25761395"
+	},
+	"item": [
+		{
+			"name": "Create a new post in club",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "clubId",
+							"value": "011709dc-83b5-4300-9afa-df9845a8988c",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "poll",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "This is caption of the post type media.",
+							"type": "text"
+						},
+						{
+							"key": "tags[0]",
+							"value": "011709dc-83b5-4300-9afa-df9845a89881",
+							"type": "text"
+						},
+						{
+							"key": "tags[1]",
+							"value": "0117092c-83b5-4300-9afa-df9845a89881",
+							"type": "text"
+						},
+						{
+							"key": "attachments",
+							"type": "file",
+							"src": "/Users/cx_tech/Documents/self/explore-kashmir/frontend/public/images/arangk.jpg"
+						},
+						{
+							"key": "name",
+							"value": "Space name",
+							"description": "Only for type=space",
+							"type": "text"
+						},
+						{
+							"key": "about",
+							"value": "This is about space",
+							"description": "Only for type=space",
+							"type": "text"
+						},
+						{
+							"key": "startsAt",
+							"value": "2025-09-19T07:28:15.341Z",
+							"description": "Only for type=space",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "Hello Blog",
+							"description": "Only for type=blog",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "overview",
+							"value": "Hello Blog",
+							"description": "Only for type=blog",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "blogCover",
+							"description": "Only for type=blog",
+							"type": "file",
+							"src": "/Users/cx_tech/Documents/self/explore-kashmir/frontend/public/images/arangk3.jpg",
+							"disabled": true
+						},
+						{
+							"key": "options[0]",
+							"value": "Option 1",
+							"description": "Only for type=poll",
+							"type": "text"
+						},
+						{
+							"key": "options[1]",
+							"value": "Option 2",
+							"description": "Only for type=poll",
+							"type": "text"
+						},
+						{
+							"key": "expiresAt",
+							"value": "2025-09-19T07:28:15.341Z",
+							"description": "Only for type=poll",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post/create",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Like unlike a post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg0Y2RkNjY5LTc4OWEtNDRjOS05NjE1LWQzMzg5YzdmNTc0NyIsImVtYWlsIjoiZmF5aXpAZ21haWwuY29tIiwidXNlclR5cGUiOiJpbnN0cnVjdG9yIiwiZGV2aWNlVG9rZW4iOiJUT0tFTl8xMjMiLCJpYXQiOjE3Mjk5MjIxODMzNjYsImV4cCI6MTcyOTkyNDc3NTM2Nn0.k4x0gYuC27LFj1rRzkSpJsVrlvPzzLe5h6AjTy8pE4k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": \"12b5ea43-acfa-4830-ada6-b4e0a4bdc1e1\"\n    //\"likeId\": \"9285055c-ace1-4ff8-85b1-6b336df31414\" // Send this only if post already liked\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post/like-unlike",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post",
+						"like-unlike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reply on a post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYyMDRmNGM3LTFmMmYtNDdiYy05NzA1LTVlM2ZlY2Y1Mjg4NiIsImVtYWlsIjoiZmF5aXpAZ21haWwuY29tIiwidXNlclR5cGUiOiJpbnN0cnVjdG9yIiwiZGV2aWNlVG9rZW4iOiJUT0tFTl8xMjMiLCJpYXQiOjE3MjkyMzkwMzkxMTYsImV4cCI6MTcyOTI0MTYzMTExNn0.UM83qgFMhtkbb0RLMgaDyBxPJl9Fa0AfwC-4B9V29EM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": \"1041a6f8-c87c-4d02-ae68-0b6282fecb76\",\n    \"reply\": \"This is another reply\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post/reply",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post",
+						"reply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bookmark/Remove bookmark Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYyMDRmNGM3LTFmMmYtNDdiYy05NzA1LTVlM2ZlY2Y1Mjg4NiIsImVtYWlsIjoiZmF5aXpAZ21haWwuY29tIiwidXNlclR5cGUiOiJpbnN0cnVjdG9yIiwiZGV2aWNlVG9rZW4iOiJUT0tFTl8xMjMiLCJpYXQiOjE3MjkyMzkwMzkxMTYsImV4cCI6MTcyOTI0MTYzMTExNn0.UM83qgFMhtkbb0RLMgaDyBxPJl9Fa0AfwC-4B9V29EM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": \"1041a6f8-c87c-4d02-ae68-0b6282fecb76\",\n    \"bookmarkId\": \"2783e7da-5cac-4370-a91a-133efa8e7bda\" // Send this bookmark Id only if post already bookmarked\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post/bookmark",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post",
+						"bookmark"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Like unlike a post reply",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYyMDRmNGM3LTFmMmYtNDdiYy05NzA1LTVlM2ZlY2Y1Mjg4NiIsImVtYWlsIjoiZmF5aXpAZ21haWwuY29tIiwidXNlclR5cGUiOiJpbnN0cnVjdG9yIiwiZGV2aWNlVG9rZW4iOiJUT0tFTl8xMjMiLCJpYXQiOjE3MjkyMzkwMzkxMTYsImV4cCI6MTcyOTI0MTYzMTExNn0.UM83qgFMhtkbb0RLMgaDyBxPJl9Fa0AfwC-4B9V29EM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postReplyId\": \"d1aa2ad0-1b67-422b-94d3-75be713b07c5\",\n    \"likeId\": \"baf4de80-8c35-4ba6-8a16-6221938383d3\" // Send this like only if reply liked already\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post/reply/like-unlike",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post",
+						"reply",
+						"like-unlike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get posts of a club",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/clubs/posts?id=011709dc-83b5-4300-9afa-df9845a8988c&offset=0&limit=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"posts"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "011709dc-83b5-4300-9afa-df9845a8988c",
+							"description": "Club Id"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single post with replies",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/clubs/post?postId=7d69899c-5091-443e-a91a-1e4a8082b176&offset=0&limit=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"clubs",
+						"post"
+					],
+					"query": [
+						{
+							"key": "postId",
+							"value": "7d69899c-5091-443e-a91a-1e4a8082b176",
+							"description": "Post id"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -46,8 +46,10 @@ export default function Example() {
 
   const onClickLogout = () => {
     deleteCookie("token");
-    localStorage.clear();
     dispatch(resetAuth());
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+    }
   };
 
   return (
